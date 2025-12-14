@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Image Upload</title>
+</head>
+<body>
+    <h1>Test Image Upload</h1>
+    <input type="file" id="fileInput" accept="image/*">
+    <button onclick="uploadImage()">Upload Image</button>
+    <div id="result"></div>
+    
+    <script>
+        async function uploadImage() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a file');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                console.log('Uploading file:', file.name);
+                const response = await fetch('http://localhost:5000/api/images/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('Response data:', result);
+                
+                document.getElementById('result').innerHTML = `
+                    <p>Upload successful!</p>
+                    <p>File URL: ${result.url}</p>
+                    <img src="${result.url}" style="max-width: 200px;">
+                `;
+            } catch (error) {
+                console.error('Upload error:', error);
+                document.getElementById('result').innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Krishna Creations - Product Details</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+            html { overflow-x: hidden; }
+
+            /* Colors */
+            :root {
+                --bg: #111;
+                --panel: #181818;
+                --text: #fff;
+                --muted: #bbb;
+                --accent: #fff;
+                --border: #333;
+            }
+
+            body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+            /* Header */
+            #header { 
+                background: var(--panel); 
+                border-bottom: 1px solid rgba(255,255,255,0.1); 
+                position: sticky; 
+                top: 0; 
+                z-index: 999; 
+                padding: 0 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 80px;
+                overflow: hidden;
+            }
+            
+            .logo-container {
+                flex: 0 0 auto;
+                margin-right: 15px;
+                display: flex;
+                align-items: center;
+                padding: 0;
+                height: 100%;
+                overflow: hidden;
+            }
+            
+            .logo-container img {
+                height: 100%;
+                width: auto;
+                max-height: 150px;
+                display: block;
+                margin: 0;
+                padding: 0;
+                transform: none;
+            }
+            
+            #navbar {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin: 0;
+                padding: 0;
+            }
+            #header nav {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+            }
+            
+            /* NAVIGATION BAR: Make compact and horizontally scrollable on mobile */
+            #navbar {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin: 0;
+                padding: 0;
+            }
+            @media (max-width: 600px) {
+                #navbar {
+                    flex-wrap: nowrap;
+                    overflow-x: auto;
+                    gap: 4px;
+                    padding: 0 2px;
+                    font-size: 14px;
+                    background: var(--panel);
+                    border-radius: 0 0 10px 10px;
+                    min-height: 44px;
+                    width: 100%;
+                    justify-content: flex-start;
+                }
+                #navbar li a {
+                    padding: 6px 10px;
+                    font-size: 13px;
+                    white-space: nowrap;
+                    min-width: auto;
+                }
+            }
+            
+            #navbar li { 
+                list-style: none; 
+                position: relative; 
+            }
+            
+            #navbar li a { 
+                text-decoration: none; 
+                font-size: 15px; 
+                font-weight: 600; 
+                color: var(--text); 
+                transition: .2s ease; 
+                padding: 8px 16px;
+                border-radius: 20px;
+                display: block;
+                position: relative;
+            }
+            
+            #navbar li a:hover, 
+            #navbar li a.active { 
+                color: var(--accent); 
+                background: rgba(255,255,255,0.2);
+            }
+            
+            #navbar li a:hover::after, 
+            #navbar li a.active::after { 
+                content: ""; 
+                width: 60%; 
+                height: 2px; 
+                background: var(--accent); 
+                position: absolute; 
+                bottom: 2px; 
+                left: 20%; 
+            }
+            
+            @media (max-width: 600px) {
+                html, body { width: 100%; overflow-x: hidden; }
+                #header { padding: 8px 4px; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+                .logo-container { margin-bottom: 0; text-align: left; margin-left: 5px; right: 0; }
+                .logo-container img { max-height: 42px; display: block; }
+                nav { flex: 1 1 auto; overflow: hidden; }
+                #navbar { gap: 2px; flex-wrap: nowrap; justify-content: flex-end; overflow-x: auto; -ms-overflow-style: none; scrollbar-width: none; width: 100%; }
+                #navbar::-webkit-scrollbar { display: none; }
+                #navbar li { margin: 0; }
+                #navbar li a { font-size: 13px; padding: 8px 12px; white-space: nowrap; display: inline-block; text-align: center; min-width: 60px; }
+            }
+            
+            #navbar li a i.fa-shopping-cart{
+                font-size: 16px;
+                margin: 0;
+                padding: 0;
+            }
+            #navbar li a[href="cart.html"] {
+                padding: 4px 4px !important;
+                min-width: 28px !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        </style>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <!-- MOBILE HEADER (only visible on screens <= 768px) -->
+        <style>
+          /* Base: hidden by default (desktop) */
+          #rf-mobile-header { display: none; }
+
+          /* Show mobile header, hide desktop header/nav on mobile */
+          @media (max-width: 768px) {
+            /* Hide existing desktop header on mobile only */
+            #header { display: none !important; }
+
+            /* Mobile header container */
+            #rf-mobile-header {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              gap: 10px;
+              padding: 8px 12px;
+              background: #000;
+              position: sticky;
+              top: 0;
+              z-index: 1000;
+              border-bottom: 1px solid rgba(255,255,255,0.12);
+            }
+
+            /* Left section: logo + brand */
+            .rf-mh-left {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              min-width: 0;
+            }
+            .rf-mh-logo { height: 40px; width: auto; display: block; }
+            .rf-mh-brand { height: 34px; width: auto; display: block; }
+
+            /* Right section: icons */
+            .rf-mh-right { display: flex; align-items: center; gap: 8px; }
+            .rf-icon-btn { background: #ffffff; border: 1px solid rgba(255,255,255,0.25); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; transition: background 0.2s ease; }
+            .rf-icon-btn:hover { background: #f0f0f0; }
+            .rf-icon-img { height: 20px; width: 20px; object-fit: contain; pointer-events: none; display: block; }
+
+            /* Dropdown menu (slide-down) */
+            .rf-user-wrap { position: relative; }
+            .rf-user-menu {
+              position: absolute; right: 0; top: 46px; width: 180px; background: #000;
+              border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; overflow: hidden;
+              box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+              max-height: 0; opacity: 0; transform: translateY(-6px);
+              transition: max-height 220ms ease, opacity 180ms ease, transform 220ms ease;
+            }
+            .rf-user-menu.open { max-height: 360px; opacity: 1; transform: translateY(0); }
+            .rf-user-menu a { display: block; padding: 10px 12px; color: #fff; text-decoration: none; font-size: 14px; }
+            .rf-user-menu a:hover { background: #111; }
+          }
+        </style>
+
+        <div id="rf-mobile-header" role="banner">
+          <div class="rf-mh-left">
+            <img class="rf-mh-logo" src="img/prince.png" alt="RAW FADE logo">
+            <a href="index.html"><img class="rf-mh-brand" src="img/RAW%20FADE%20Logo%20Design1.png" alt="RAW FADE brand"></a>
+          </div>
+          <div class="rf-mh-right">
+            <button class="rf-icon-btn" id="rfNotifyBtn" title="Notifications" aria-label="Notifications">
+              <img class="rf-icon-img" src="img/pngwing.com (17).png" alt="">
+            </button>
+            <div class="rf-user-wrap">
+              <button class="rf-icon-btn" id="rfUserBtn" aria-haspopup="true" aria-expanded="false" aria-controls="rfUserMenu" title="Account" aria-label="Account">
+                <img class="rf-icon-img" src="img/pngwing.com (15).png" alt="">
+              </button>
+              <nav id="rfUserMenu" class="rf-user-menu" role="menu" aria-hidden="true">
+                <a role="menuitem" href="login.html">login/sign</a>
+                <a role="menuitem" href="shop.html">shop</a>
+                <a role="menuitem" href="shirts.html">shirts</a>
+                <a role="menuitem" href="tshirts.html">tshirts</a>
+                <a role="menuitem" href="jeans.html">jeans</a>
+                <a role="menuitem" href="shorts.html">shorts</a>
+                <a role="menuitem" href="jackets.html">jackets</a>
+                <a role="menuitem" href="cart.html">cart</a>
+                <a role="menuitem" href="#" id="rfLogoutLink">logout</a>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          (function () {
+            const userBtn = document.getElementById('rfUserBtn');
+            const menu = document.getElementById('rfUserMenu');
+            const notifyBtn = document.getElementById('rfNotifyBtn');
+
+            function closeMenu() {
+              if (menu) {
+                menu.classList.remove('open');
+                menu.setAttribute('aria-hidden', 'true');
+                if (userBtn) userBtn.setAttribute('aria-expanded', 'false');
+              }
+            }
+
+            if (userBtn && menu) {
+              userBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const willOpen = !menu.classList.contains('open');
+                if (willOpen) {
+                  menu.classList.add('open');
+                  menu.setAttribute('aria-hidden', 'false');
+                  userBtn.setAttribute('aria-expanded', 'true');
+                } else {
+                  closeMenu();
+                }
+              });
+
+              document.addEventListener('click', function (e) {
+                if (!menu.contains(e.target) && e.target !== userBtn) closeMenu();
+              });
+
+              document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeMenu();
+              });
+            }
+
+            if (notifyBtn) {
+              notifyBtn.addEventListener('click', function () {
+                alert('No new notifications');
+              });
+            }
+
+            // Ensure menu links navigate properly on mobile
+            if (menu) {
+              const links = menu.querySelectorAll('a[href]');
+              links.forEach(link => {
+                link.addEventListener('click', function (e) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  closeMenu();
+                  window.location.href = this.href;
+                });
+              });
+            }
+
+            // Update mobile menu auth item based on login state
+            if (menu) {
+              const authItem = menu.querySelector('a[href="login.html"]');
+              if (authItem) {
+                const token = localStorage.getItem('token');
+                const username = localStorage.getItem('username');
+                if (token && username) {
+                  authItem.textContent = username;
+                  authItem.href = 'shop.html';
+                } else {
+                  authItem.textContent = 'login/sign';
+                  authItem.href = 'login.html';
+                }
+              }
+            }
+          })();
+        </script>
+
+        <section id="header">
+            <div class="logo-container">
+                <a href="index.html"><img src="img/logo1.png" class="logo" alt="RAW FADE"></a>
+            </div>
+            <nav>
+                <ul id="navbar">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html" class="active">Shop</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="login.html" id="authLink">Login</a></li>
+                    <li><a href="cart.html"><i class="fas fa-shopping-cart"></i></a></li>
+                </ul>
+            </nav>
+        </section>
+
+        <section id="product-details" class="section-p1" style="background: var(--bg); color: var(--text); padding: 40px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; margin: 40px 0;">
+            <div class="single-pro-image" style="flex: 1; min-width: 300px; margin-right: 30px;">
+                <img src="img/products/c1-1.png" alt="Product Main Image" width="100%" id="MainImg" style="border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); object-fit: contain; background-color: #222; padding: 10px; height: 400px;">
+                
+                <div class="small-img-grp" style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <div class="small-img-col" style="flex-basis: 24%; cursor: pointer;">
+                        <img src="img/products/c1-1.png" alt="Product Image 1" width="100%" class="small-img" onclick="changeImage(this.src)" style="border-radius: 5px; border: 1px solid var(--border); object-fit: contain; background-color: #222; padding: 5px; height: 80px;">
+                    </div>
+                    <div class="small-img-col" style="flex-basis: 24%; cursor: pointer;">
+                        <img src="img/products/c1-1.png" alt="Product Image 2" width="100%" class="small-img" onclick="changeImage(this.src)" style="border-radius: 5px; border: 1px solid var(--border); object-fit: contain; background-color: #222; padding: 5px; height: 80px;">
+                    </div>
+                    <div class="small-img-col" style="flex-basis: 24%; cursor: pointer;">
+                        <img src="img/products/c1-1.png" alt="Product Image 3" width="100%" class="small-img" onclick="changeImage(this.src)" style="border-radius: 5px; border: 1px solid var(--border); object-fit: contain; background-color: #222; padding: 5px; height: 80px;">
+                    </div>
+                    <div class="small-img-col" style="flex-basis: 24%; cursor: pointer;">
+                        <img src="img/products/c1-1.png" alt="Product Image 4" width="100%" class="small-img" onclick="changeImage(this.src)" style="border-radius: 5px; border: 1px solid var(--border); object-fit: contain; background-color: #222; padding: 5px; height: 80px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="single-pro-details" style="flex: 1; min-width: 300px; padding: 20px; background: var(--panel); border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                <h6 style="color: var(--muted); margin-bottom: 10px; font-size: 14px;">Home / T-shirt</h6>
+                <h4 style="color: var(--text); margin-bottom: 15px; font-size: 24px;">Men's Fashion T Shirt</h4>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;"><span style="color: #999999; font-size: 20px; text-decoration: line-through; font-weight: 400;">$278.00</span><span style="color: var(--accent); font-size: 28px; font-weight: 700;">$139.00</span></div>
+                <select id="sizeSelect" style="padding: 10px; width: 100%; margin-bottom: 15px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 5px;">
+                    <option value="">Select Size</option>
+                    <option value="Small">Small</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Large">Large</option>
+                    <option value="X-Large">X-Large</option>
+                    <option value="XX-Large">XX-Large</option>
+                </select>
+                <br>
+                <input type="number" value="1" min="1" id="quantityInput" style="padding: 10px; width: 100px; margin-bottom: 15px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 5px;">
+                <button type="button" class="normal" onclick="addToCart()" style="padding: 12px 20px; background: var(--accent); color: var(--bg); border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-left: 10px;">Add to Cart</button>
+                <h4 style="color: var(--text); margin: 20px 0 10px; font-size: 18px;">Product Details</h4>
+                <span style="color: var(--muted); line-height: 1.6; display: block;">The Gildan Ultra Cotton T-shirt is made from a substantial 6.0oz pre sq.yd. fabric constructed from 100% cotton. This classic fit preshrunk jersey knit provides unmatched comfort with each wear. Featuring a taped neck and shoulder, and a seamless double-needle collar, and available in a range of colors, it offers it all in the ultimate head-turning package.</span>
+            </div>
+        </section> 
+
+        <section class="new-arrivals section-p1" style="background: var(--bg); color: var(--text); padding: 40px 20px; text-align: center;">
+            <h2 style="color: var(--text); margin-bottom: 15px; font-size: 32px;">Featured Products</h2>
+            <p style="color: var(--muted); margin-bottom: 30px;">Summer Collection New Modern Design</p>
+            <div class="pro-container" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
+            <style>
+                @media (max-width: 799px) {
+                    .pro-container {
+                        display: grid !important;
+                        grid-template-columns: repeat(2, 1fr) !important;
+                        gap: 10px !important;
+                    }
+                    .pro {
+                        width: 100% !important;
+                        min-width: unset !important;
+                        margin: 0 !important;
+                    }
+                }
+            </style>
+                <div class="pro" data-product-id="1" style="width: 280px; padding: 15px; background: var(--panel); border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); position: relative; transition: all 0.3s ease;">
+                    <img src="img/products/c2-1.png" alt="Product" style="width: 100%; height: 200px; border-radius: 8px; margin-bottom: 15px; object-fit: contain; background-color: #222; padding: 5px;">
+                    
+                    <div class="des" style="text-align: start; padding: 0 10px;">
+                        <span style="color: var(--muted); font-size: 14px;">Krishna Creations</span>
+                        <h5 style="color: var(--text); margin: 8px 0; font-size: 16px;">Calico T-shirt</h5>
+                        <div class="star" style="color: gold; margin-bottom: 8px;">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
+                            <span style="color: #999999; font-size: 14px; text-decoration: line-through; font-weight: 400;">$156</span>
+                            <span style="color: var(--accent); font-size: 18px; font-weight: 700;">$78</span>
+                        </div>
+                    </div>
+                    <a href="#" class="cart" onclick="addRelatedProductToCart(1)" style="position: absolute; bottom: 15px; right: 15px; background: var(--accent); color: var(--bg); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"><i class="fa-solid fa-cart-shopping"></i></a>
+                </div>
+                <div class="pro" data-product-id="2" style="width: 280px; padding: 15px; background: var(--panel); border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); position: relative; transition: all 0.3s ease;">
+                    <img src="img/products/c3-1.png" alt="Product" style="width: 100%; height: 200px; border-radius: 8px; margin-bottom: 15px; object-fit: contain; background-color: #222; padding: 5px;">
+                    
+                    <div class="des" style="text-align: start; padding: 0 10px;">
+                        <span style="color: var(--muted); font-size: 14px;">Krishna Creations</span>
+                        <h5 style="color: var(--text); margin: 8px 0; font-size: 16px;">Summer Dress</h5>
+                        <div class="star" style="color: gold; margin-bottom: 8px;">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
+                            <span style="color: #999999; font-size: 14px; text-decoration: line-through; font-weight: 400;">$240</span>
+                            <span style="color: var(--accent); font-size: 18px; font-weight: 700;">$120</span>
+                        </div>
+                    </div>
+                    <a href="#" class="cart" onclick="addRelatedProductToCart(2)" style="position: absolute; bottom: 15px; right: 15px; background: var(--accent); color: var(--bg); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"><i class="fa-solid fa-cart-shopping"></i></a>
+                </div>
+                <div class="pro" data-product-id="3" style="width: 280px; padding: 15px; background: var(--panel); border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); position: relative; transition: all 0.3s ease;">
+                    <img src="img/products/c4-1.png" alt="Product" style="width: 100%; height: 200px; border-radius: 8px; margin-bottom: 15px; object-fit: contain; background-color: #222; padding: 5px;">
+                    
+                    <div class="des" style="text-align: start; padding: 0 10px;">
+                        <span style="color: var(--muted); font-size: 14px;">Krishna Creations</span>
+                        <h5 style="color: var(--text); margin: 8px 0; font-size: 16px;">Casual Jeans</h5>
+                        <div class="star" style="color: gold; margin-bottom: 8px;">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
+                            <span style="color: #999999; font-size: 14px; text-decoration: line-through; font-weight: 400;">$190</span>
+                            <span style="color: var(--accent); font-size: 18px; font-weight: 700;">$95</span>
+                        </div>
+                    </div>
+                    <a href="#" class="cart" onclick="addRelatedProductToCart(3)" style="position: absolute; bottom: 15px; right: 15px; background: var(--accent); color: var(--bg); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"><i class="fa-solid fa-cart-shopping"></i></a>
+                </div>
+                <div class="pro" data-product-id="4" style="width: 280px; padding: 15px; background: var(--panel); border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); position: relative; transition: all 0.3s ease;">
+                    <img src="img/products/c5-1.png" alt="Product" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
+                    
+                    <div class="des" style="text-align: start; padding: 0 10px;">
+                        <span style="color: var(--muted); font-size: 14px;">Krishna Creations</span>
+                        <h5 style="color: var(--text); margin: 8px 0; font-size: 16px;">Formal Shirt</h5>
+                        <div class="star" style="color: gold; margin-bottom: 8px;">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <h4 style="color: var(--accent); font-size: 18px;">$85</h4>
+                    </div>
+                    <a href="#" class="cart" onclick="addRelatedProductToCart(4)" style="position: absolute; bottom: 15px; right: 15px; background: var(--accent); color: var(--bg); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"><i class="fa-solid fa-cart-shopping"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <section id="newsletter" class="section-p1 section-m1" style="background: var(--panel); color: var(--text); padding: 40px 20px; margin: 40px 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+            <div class="newstext" style="flex: 1; min-width: 300px;">
+                <h4 style="color: var(--text); font-size: 24px; margin-bottom: 10px;">Sign Up For Newsletters</h4>
+                <p style="color: var(--muted); font-size: 16px;">Get E-mail updates about our latest shop and <span style="color: var(--accent);">special offers.</span></p>
+            </div>
+            <div class="form" style="flex: 1; min-width: 300px; display: flex; margin-top: 20px;">
+                <input type="text" placeholder="Your email address" id="signUp" style="width: 100%; padding: 12px 15px; border-radius: 5px 0 0 5px; border: 1px solid var(--border); background: var(--bg); color: var(--text);">
+                <button class="normal" style="padding: 12px 20px; background: var(--accent); color: var(--bg); border: none; border-radius: 0 5px 5px 0; font-weight: bold; cursor: pointer;">Sign Up</button>
+            </div>
+        </section>
+
+        <footer class="section-p1" style="background: var(--panel); color: var(--text); padding: 40px 20px; margin-top: 40px;">
+            <div class="col">
+                <img class="logo" src="img/logo.png" alt="Logo" style="max-width: 150px; margin-bottom: 20px;">
+                <h4 style="color: var(--text); margin-bottom: 10px;">Contact</h4>
+                <p style="color: var(--muted); margin-bottom: 8px;"><strong>Address:</strong> 562 Wellington Road, Street 32, San Francisco</p>
+                <p style="color: var(--muted); margin-bottom: 8px;"><strong>Phone:</strong> +01 2222 365 /(+91) 01 2345 6789</p>
+                <p style="color: var(--muted); margin-bottom: 8px;"><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+                <div class="follow">
+                    <h4 style="color: var(--text); margin: 15px 0 10px 0;">Follow us</h4>
+                    <div class="icon" style="display: flex; gap: 15px;">
+                        <i class="fab fa-facebook-f" style="color: var(--muted);"></i>
+                        <i class="fab fa-twitter" style="color: var(--muted);"></i>
+                        <i class="fab fa-instagram" style="color: var(--muted);"></i>
+                        <i class="fab fa-pinterest-p" style="color: var(--muted);"></i>
+                        <i class="fab fa-youtube" style="color: var(--muted);"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <h4 style="color: var(--text); margin-bottom: 15px;">About</h4>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">About us</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">Delivery Information</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">Privacy Policy</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">Terms & Conditions</a>
+            </div>
+
+            <div class="col">
+                <h4 style="color: var(--text); margin-bottom: 15px;">My Account</h4>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">Sign In</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">View Cart</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">My Wishlist</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">Track My Order</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">Help</a>
+            </div>
+
+            <div class="col install">
+                <h4 style="color: var(--text); margin-bottom: 15px;">Install App</h4>
+                <p style="color: var(--muted); margin-bottom: 10px;">From App Store or Google Play</p>
+                <div class="row" style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <img src="img/pay/app.jpg" alt="App Store" style="max-width: 120px; border-radius: 5px;">
+                    <img src="img/pay/play.jpg" alt="Google Play" style="max-width: 120px; border-radius: 5px;">
+                </div>
+                <p style="color: var(--muted); margin-bottom: 10px;">Secured Payment Gateways</p>
+                <img src="img/pay/pay.png" alt="Payment Methods" style="max-width: 250px;">
+            </div>
+
+            <div class="copyright" style="width: 100%; text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
+                <p style="color: var(--muted);"> 2024, Krishna Creations - All Rights Reserved</p>
+            </div>
+        </footer>
+
+        <script>
+            // Store the loaded product data globally for cart operations
+            let currentProduct = null;
+            
+            // Get product ID from URL parameter
+            function getProductIdFromUrl() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get('id');
+            }
+
+            // Change main image when clicking on small images
+            function changeImage(src) {
+                var main = document.getElementById('MainImg');
+                if (main) {
+                    main.src = src;
+                }
+            }
+
+            // Add to cart functionality
+            async function addToCart() {
+                const productId = getProductIdFromUrl();
+                if (!productId || !currentProduct) {
+                    alert('Product data not available');
+                    return;
+                }
+
+                const token = localStorage.getItem('token');
+                const username = localStorage.getItem('username');
+                
+                if (!token || !username) {
+                    localStorage.setItem('redirectAfterLogin', window.location.href);
+                    alert('Please login to add items to cart');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                try {
+                    // Create cart item using the exact backend product data
+                    const cartItem = {
+                        product: {
+                            id: currentProduct.id,
+                            name: currentProduct.title,
+                            price: currentProduct.price,
+                            imageUrl: resolveProductImage(currentProduct.imagePath || '')
+                        },
+                        quantity: 1,
+                        priceAtTime: currentProduct.price
+                    };
+                    
+                    // Add to localCart directly to ensure correct data
+                    let localCart = JSON.parse(localStorage.getItem('localCart')) || { items: [] };
+                    const items = Array.isArray(localCart.items) ? localCart.items : [];
+                    
+                    const existingIndex = items.findIndex(i => i.product && i.product.id == productId);
+                    if (existingIndex >= 0) {
+                        items[existingIndex].quantity = (items[existingIndex].quantity || 1) + 1;
+                    } else {
+                        items.push(cartItem);
+                    }
+                    
+                    localCart.items = items;
+                    localStorage.setItem('localCart', JSON.stringify(localCart));
+                    
+                    // Try to sync with backend if available
+                    try {
+                        const response = await fetch('http://localhost:8080/api/cart/add', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ productId: Number(productId), quantity: 1 })
+                        });
+                        
+                        if (response.status === 401) {
+                            console.warn('Token expired, logging out user');
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('username');
+                            alert('Your session has expired. Please login again.');
+                            window.location.href = 'login.html';
+                            return;
+                        }
+                    } catch (backendError) {
+                        console.warn('Backend sync failed, but local dew cart updated:', backendError);
+                    }
+                    
+                    alert('Product added to cart successfully!');
+                } catch (error) {
+                    console.error('Error adding to cart:', error);
+                    alert('Error adding product to cart');
+                }
+            }
+
+            // Add to cart for related products
+            async function addRelatedProductToCart(productId) {
+                const token = localStorage.getItem('token');
+                const username = localStorage.getItem('username');
+                
+                if (!token || !username) {
+                    localStorage.setItem('redirectAfterLogin', window.location.href);
+                    alert('Please login to add items to cart');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                try {
+                    // Use cart manager to add item
+                    const success = await cartManager.addToCart(productId, 1);
+                    if (success) {
+                        alert('Product added to cart successfully!');
+                    }
+                } catch (error) {
+                    console.error('Error adding to cart:', error);
+                    alert('Error adding product to cart');
+                }
+            }
+
+            // Update auth link based on login status
+            function updateAuthLink() {
+                const token = localStorage.getItem('token');
+                const username = localStorage.getItem('username');
+                const authLink = document.getElementById('authLink');
+                
+                if (token && username) {
+                    authLink.textContent = `Welcome, ${username}`;
+                    authLink.href = '#';
+                    authLink.onclick = function(e) {
+                        e.preventDefault();
+                        logout();
+                    };
+                } else {
+                    authLink.textContent = 'Login';
+                    authLink.href = 'login.html';
+                    authLink.onclick = null;
+                }
+            }
+
+            function logout() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('username');
+                localStorage.removeItem('email');
+                alert('Logged out successfully');
+                window.location.href = 'index.html';
+            }
+            
+            // Setup newsletter
+            function setupNewsletter() {
+                document.querySelector('#newsletter .form button').addEventListener('click', function() {
+                    const email = document.getElementById('signUp').value;
+                    if (email) {
+                        alert('Thank you for subscribing to our newsletter!');
+                        document.getElementById('signUp').value = '';
+                    } else {
+                        alert('Please enter your email address');
+                    }
+                });
+            }
+
+            // Get product ID from URL parameter
+            function getProductIdFromUrl() {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get('id');
+            }
+
+            // Load product data from backend
+            async function loadProductData() {
+                const productId = getProductIdFromUrl();
+                if (!productId) {
+                    console.error('No product ID found in URL');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`http://localhost:8080/api/products/${productId}`);
+                    console.log('Fetching product with ID:', productId);
+                    
+                    if (response.ok) {
+                        const product = await response.json();
+                        console.log('Product loaded:', product);
+                        currentProduct = product; // Store globally for cart operations
+                        updateProductDetails(product);
+                    } else {
+                        console.error('Failed to load product:', response.status);
+                        showProductNotFound();
+                    }
+                } catch (error) {
+                    console.error('Error loading product:', error);
+                    showProductNotFound();
+                }
+            }
+
+            // Safely resolve product image path for this page (mirror products-render.js behavior)
+            const API_ORIGIN = 'http://localhost:8080';
+            function resolveProductImage(url) {
+                if (!url) return '';
+                // If it's already an absolute URL, use it as-is
+                if (/^https?:\/\//i.test(url)) return url;
+                // If it is a frontend "img/..." asset, serve it from the same Spring origin
+                if (url.startsWith('img/')) return API_ORIGIN + '/' + url;
+                // If it already starts with /uploads/, use it directly from backend
+                if (url.startsWith('/uploads/')) return API_ORIGIN + url;
+                // Otherwise assume it's an uploaded product image filename
+                // served from /uploads/products on the backend, same as products-render.js
+                return API_ORIGIN + '/uploads/products/' + url;
+            }
+
+            // Update page with product data
+            function updateProductDetails(product) {
+                // Update title
+                const titleElement = document.querySelector('.single-pro-details h4');
+                if (titleElement) titleElement.textContent = product.title || 'Product Details';
+
+                // Update price
+                const priceElement = document.querySelector('.single-pro-details span:last-of-type');
+                if (priceElement) priceElement.textContent = `₹${product.price || '0'}`;
+
+                // Resolve image path in a flexible way so images actually load
+                const resolvedImage = resolveProductImage(product.imagePath || '');
+
+                // Update main image
+                const mainImage = document.getElementById('MainImg');
+                if (mainImage && resolvedImage) {
+                    mainImage.src = resolvedImage;
+                }
+
+                // Update thumbnails to match the main image so there is no mismatch
+                if (resolvedImage) {
+                    document.querySelectorAll('.small-img').forEach(function(imgEl) {
+                        imgEl.src = resolvedImage;
+                    });
+                }
+
+                // Update description
+                const descriptionElement = document.querySelector('.single-pro-details p');
+                if (descriptionElement && product.description) {
+                    descriptionElement.textContent = product.description;
+                }
+
+                // Update add to cart button with correct product data
+                const addToCartBtn = document.querySelector('.add-to-cart');
+                if (addToCartBtn) {
+                    addToCartBtn.setAttribute('onclick', 'addToCart()');
+                }
+            }
+
+            // Show product not found message
+            function showProductNotFound() {
+                const container = document.querySelector('.single-pro-details');
+                if (container) {
+                    container.innerHTML = '<h2>Product Not Found</h2><p>The product you are looking for does not exist.</p>';
+                }
+            }
+
+            // Initialize page
+            document.addEventListener('DOMContentLoaded', function() {
+                loadProductData();
+                updateAuthLink();
+                setupNewsletter();
+            });
+        </script>
+
+    <script src="auth.js"></script>
+    <script src="cart.js"></script>
+
+    </body>
+</html>

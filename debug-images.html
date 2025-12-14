@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Loading Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .test-result { margin: 10px 0; padding: 10px; background: #f0f0f0; }
+        .error { background: #ffe6e6; color: #cc0000; }
+        .success { background: #e6ffe6; color: #006600; }
+        img { max-width: 100px; max-height: 100px; margin: 5px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <h1>Image Loading Debug Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Test Spring Backend Connection</h2>
+        <button onclick="testBackend()">Test Backend</button>
+        <div id="backendResult" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Test Products API</h2>
+        <button onclick="testProductsAPI()">Test Products API</button>
+        <div id="productsResult" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Test Image Resolution</h2>
+        <button onclick="testImageResolution()">Test Image Resolution</button>
+        <div id="imageResult" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Test Direct Image Loading</h2>
+        <button onclick="testDirectImages()">Test Direct Images</button>
+        <div id="directResult" class="test-result"></div>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+        const API_ORIGIN = 'http://localhost:8080';
+        
+        function logResult(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = message;
+            element.className = isError ? 'test-result error' : 'test-result success';
+        }
+        
+        async function testBackend() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    logResult('backendResult', `Backend is running: ${JSON.stringify(data)}`);
+                } else {
+                    logResult('backendResult', `Backend returned status: ${response.status}`, true);
+                }
+            } catch (error) {
+                logResult('backendResult', `Backend connection failed: ${error.message}`, true);
+            }
+        }
+        
+        async function testProductsAPI() {
+            try {
+                const response = await fetch(`${API_BASE}/products`);
+                if (response.ok) {
+                    const products = await response.json();
+                    logResult('productsResult', `Found ${products.length} products`);
+                    
+                    // Show first few products with their image paths
+                    const sampleProducts = products.slice(0, 3);
+                    sampleProducts.forEach((product, index) => {
+                        const productInfo = document.createElement('div');
+                        productInfo.innerHTML = `
+                            <p><strong>Product ${index + 1}:</strong> ${product.title}</p>
+                            <p>Image Path: ${product.imagePath || 'No image path'}</p>
+                            <img src="${resolveImage(product.imagePath || '')}" alt="${product.title}" 
+                                 onerror="this.style.border='2px solid red'; this.alt='Image failed to load';">
+                        `;
+                        document.getElementById('productsResult').appendChild(productInfo);
+                    });
+                } else {
+                    logResult('productsResult', `Products API returned status: ${response.status}`, true);
+                }
+            } catch (error) {
+                logResult('productsResult', `Products API failed: ${error.message}`, true);
+            }
+        }
+        
+        function resolveImage(url) {
+            if (!url) return '';
+            if (/^https?:\/\//i.test(url)) return url;
+            if (url.startsWith('/')) return API_ORIGIN + url;
+            // If it starts with img/, it's already a full path from the root
+            if (url.startsWith('img/')) return API_ORIGIN + '/' + url;
+            // If it's just a filename (no slash/protocol), assume uploads/products on backend
+            return `${API_ORIGIN}/uploads/products/${url}`;
+        }
+        
+        function testImageResolution() {
+            const testPaths = [
+                'img/products/c4-1.png',
+                'img/products/tshirt-1234567890.jpg',
+                'c4-1.png',
+                '/img/products/c4-1.png'
+            ];
+            
+            let results = '';
+            testPaths.forEach(path => {
+                const resolved = resolveImage(path);
+                results += `<p><strong>${path}</strong> → ${resolved}</p>`;
+            });
+            
+            logResult('imageResult', results);
+        }
+        
+        function testDirectImages() {
+            const testImages = [
+                'img/products/c4-1.png',
+                'img/products/c4-2.png',
+                'img/products/c5-1.png'
+            ];
+            
+            let results = '';
+            testImages.forEach(imagePath => {
+                const fullUrl = resolveImage(imagePath);
+                results += `
+                    <div style="margin: 10px 0;">
+                        <p><strong>${imagePath}</strong></p>
+                        <p>Full URL: ${fullUrl}</p>
+                        <img src="${fullUrl}" alt="Test image" 
+                             onerror="this.style.border='2px solid red'; this.alt='Failed: ' + this.src;">
+                    </div>
+                `;
+            });
+            
+            logResult('directResult', results);
+        }
+    </script>
+</body>
+</html>

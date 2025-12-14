@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Loading Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .test-result { margin: 10px 0; padding: 10px; background: #f0f0f0; }
+        .error { background: #ffe6e6; color: #cc0000; }
+        .success { background: #e6ffe6; color: #006600; }
+        img { max-width: 100px; max-height: 100px; margin: 5px; border: 1px solid #ddd; }
+        .debug-info { font-family: monospace; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>Image Loading Debug Tool</h1>
+    
+    <div class="test-section">
+        <h2>1. Test Spring Backend Connection</h2>
+        <button onclick="testBackend()">Test Backend</button>
+        <div id="backendResult" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Test Products API</h2>
+        <button onclick="testProductsAPI()">Test Products API</button>
+        <div id="productsResult" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Test Image Resolution</h2>
+        <button onclick="testImageResolution()">Test Image Resolution</button>
+        <div id="imageResult" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Test Direct Image Loading</h2>
+        <button onclick="testDirectImages()">Test Direct Images</button>
+        <div id="directResult" class="test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>5. Test Products Render</h2>
+        <button onclick="testProductsRender()">Test Products Render</button>
+        <div id="renderResult" class="test-result"></div>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+        const API_ORIGIN = 'http://localhost:8080';
+        
+        function logResult(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = message;
+            element.className = isError ? 'test-result error' : 'test-result success';
+        }
+        
+        async function testBackend() {
+            try {
+                // Try Spring Actuator health endpoint first
+                let response = await fetch(`${API_ORIGIN}/actuator/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    logResult('backendResult', `Backend is running (Actuator): ${JSON.stringify(data)}`);
+                    return;
+                }
+                
+                // Fallback to custom health endpoint
+                response = await fetch(`${API_BASE}/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    logResult('backendResult', `Backend is running (Custom): ${JSON.stringify(data)}`);
+                } else {
+                    logResult('backendResult', `Backend returned status: ${response.status} for both health endpoints`, true);
+                }
+            } catch (error) {
+                logResult('backendResult', `Backend connection failed: ${error.message}`, true);
+            }
+        }
+        
+        async function testProductsAPI() {
+            try {
+                const response = await fetch(`${API_BASE}/products`);
+                if (response.ok) {
+                    const products = await response.json();
+                    logResult('productsResult', `Found ${products.length} products`);
+                    
+                    // Show first few products with their image paths
+                    const sampleProducts = products.slice(0, 3);
+                    sampleProducts.forEach((product, index) => {
+                        const productInfo = document.createElement('div');
+                        productInfo.className = 'debug-info';
+                        productInfo.innerHTML = `
+                            <p><strong>Product ${index + 1}:</strong> ${product.title}</p>
+                            <p>ID: ${product.id}</p>
+                            <p>Image Path: ${product.imagePath || 'No image path'}</p>
+                            <p>Resolved URL: ${resolveImage(product.imagePath || '')}</p>
+                            <img src="${resolveImage(product.imagePath || '')}" alt="${product.title}" 
+                                 onerror="this.style.border='2px solid red'; this.alt='Image failed to load'; console.error('Failed to load:', this.src);">
+                        `;
+                        document.getElementById('productsResult').appendChild(productInfo);
+                    });
+                } else {
+                    logResult('productsResult', `Products API returned status: ${response.status}`, true);
+                }
+            } catch (error) {
+                logResult('productsResult', `Products API failed: ${error.message}`, true);
+            }
+        }
+        
+        function resolveImage(url) {
+            if (!url) return '';
+            if (/^https?:\/\//i.test(url)) return url;
+            if (url.startsWith('img/')) return API_ORIGIN + '/' + url;
+            // If it already starts with /uploads/, use it directly
+            if (url.startsWith('/uploads/')) return API_ORIGIN + url;
+            // If it's just a filename (no slash/protocol), assume uploads/products on backend
+            return `${API_ORIGIN}/uploads/products/${url}`;
+        }
+        
+        function testImageResolution() {
+            const testPaths = [
+                'img/products/c1-1.png',
+                'img/products/c4-1.png',
+                '/uploads/products/c3-2.png',
+                'c3-2.png'
+            ];
+            
+            let results = '';
+            testPaths.forEach(path => {
+                const resolved = resolveImage(path);
+                results += `<p><strong>${path}</strong> → ${resolved}</p>`;
+            });
+            
+            logResult('imageResult', results);
+        }
+        
+        async function testDirectImages() {
+            // First test if any static resource works
+            let results = '';
+            try {
+                const testResponse = await fetch(`${API_ORIGIN}/img/products/c1-1.png`);
+                results += `<p><strong>Direct image test:</strong> Status ${testResponse.status}</p>`;
+                results += `<p>Response headers: ${JSON.stringify([...testResponse.headers.entries()])}</p>`;
+            } catch (error) {
+                results += `<p><strong>Direct image test failed:</strong> ${error.message}</p>`;
+            }
+            
+            // Test if uploads work (since they're configured in StaticResourceConfig)
+            try {
+                const uploadResponse = await fetch(`${API_ORIGIN}/uploads/`);
+                results += `<p><strong>Uploads directory test:</strong> Status ${uploadResponse.status}</p>`;
+            } catch (error) {
+                results += `<p><strong>Uploads directory test failed:</strong> ${error.message}</p>`;
+            }
+            
+            // Test original images
+            const testImages = [
+                'img/products/c1-1.png',
+                'img/products/c4-1.png',
+                'img/products/c3-2.png'
+            ];
+            
+            for (const imagePath of testImages) {
+                const fullUrl = resolveImage(imagePath);
+                try {
+                    const response = await fetch(fullUrl, { method: 'HEAD' });
+                    results += `
+                        <div style="margin: 10px 0;">
+                            <p><strong>${imagePath}</strong></p>
+                            <p>Full URL: ${fullUrl}</p>
+                            <p>Status: ${response.status} ${response.ok ? 'OK' : 'FAILED'}</p>
+                            <img src="${fullUrl}" alt="Test image" 
+                                 onerror="this.style.border='2px solid red'; this.alt='Failed: ' + this.src;">
+                        </div>
+                    `;
+                } catch (error) {
+                    results += `
+                        <div style="margin: 10px 0;">
+                            <p><strong>${imagePath}</strong></p>
+                            <p>Full URL: ${fullUrl}</p>
+                            <p>Error: ${error.message}</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            logResult('directResult', results);
+        }
+        
+        async function testProductsRender() {
+            try {
+                // Check if ProductsRender is available
+                if (typeof window.ProductsRender === 'undefined') {
+                    logResult('renderResult', 'ProductsRender is not available. Make sure products-render.js is loaded.', true);
+                    return;
+                }
+                
+                // Create a test container
+                const testContainer = document.createElement('div');
+                testContainer.id = 'test-render-container';
+                testContainer.style.border = '1px solid #ccc';
+                testContainer.style.padding = '10px';
+                testContainer.style.margin = '10px 0';
+                
+                try {
+                    await window.ProductsRender.renderInto('#test-render-container', { productType: 'tshirts' });
+                    
+                    // Check if products were rendered
+                    const renderedProducts = testContainer.querySelectorAll('.product-card');
+                    if (renderedProducts.length > 0) {
+                        logResult('renderResult', `Successfully rendered ${renderedProducts.length} products`);
+                        
+                        // Check images
+                        const images = testContainer.querySelectorAll('img');
+                        let imageStatus = '';
+                        images.forEach((img, index) => {
+                            const status = img.naturalWidth > 0 ? 'LOADED' : 'FAILED';
+                            const color = img.naturalWidth > 0 ? 'green' : 'red';
+                            imageStatus += `<p style="color: ${color}">Image ${index + 1}: ${status} - ${img.src}</p>`;
+                        });
+                        
+                        const statusDiv = document.createElement('div');
+                        statusDiv.innerHTML = imageStatus;
+                        document.getElementById('renderResult').appendChild(statusDiv);
+                        
+                        // Add the rendered container to see the results
+                        document.getElementById('renderResult').appendChild(testContainer);
+                    } else {
+                        logResult('renderResult', 'No products were rendered. Check product filtering.', true);
+                    }
+                } catch (error) {
+                    logResult('renderResult', `ProductsRender failed: ${error.message}`, true);
+                }
+            } catch (error) {
+                logResult('renderResult', `Error testing ProductsRender: ${error.message}`, true);
+            }
+        }
+    </script>
+</body>
+</html>

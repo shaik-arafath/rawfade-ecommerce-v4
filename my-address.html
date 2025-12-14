@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Address | RAW FADE</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="auth.js"></script>
+  <style>
+    body { background:#050505; color:#fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    .page-wrap { max-width: 600px; margin: 120px auto 40px; padding: 0 16px; }
+    h1 { margin-bottom: 8px; }
+    .muted { color:#aaa; }
+    .card { background:#111; border:1px solid #222; border-radius:8px; padding:14px 16px; margin-top:10px; }
+    .field { margin-bottom:6px; font-size:14px; }
+    .label { color:#888; display:block; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+    form .field input, form .field textarea { width:100%; background:#050505; border:1px solid #333; border-radius:6px; padding:6px 8px; color:#fff; }
+    form .actions { margin-top:10px; display:flex; gap:8px; }
+    .btn { padding:8px 12px; border-radius:6px; border:none; cursor:pointer; font-size:14px; }
+    .btn-primary { background:#ffd700; color:#111; }
+    .btn-secondary { background:#222; color:#fff; }
+
+    /* Header styles copied from tshirts.html for consistent look */
+    #header { 
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.95), rgba(9, 9, 11, 0.95));
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-bottom: 2px solid rgba(66, 65, 65, 0.2); 
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      position: sticky; 
+      top: 0; 
+      z-index: 999; 
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 80px;
+      overflow: hidden;
+      animation: headerGlow 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes headerGlow {
+      0% {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 30px rgba(135, 206, 235, 0.1);
+      }
+      100% {
+        box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4), 0 0 40px rgba(135, 206, 235, 0.2);
+      }
+    }
+
+    .logo-container {
+      flex: 0 0 auto;
+      margin-right: 15px;
+      display: flex;
+      align-items: center;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      animation: logoFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-2px); }
+    }
+
+    .logo-container img {
+      height: 100%;
+      width: auto;
+      max-height: 150px;
+      display: block;
+      margin: 0;
+      padding: 0;
+      transform: none;
+      filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.3));
+      transition: all 0.3s ease;
+    }
+
+    .logo-container img:hover {
+      filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.5));
+      transform: scale(1.05);
+    }
+
+    #header nav {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    #navbar { 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      flex-wrap: wrap; 
+      gap: 12px; 
+      margin: 0; 
+      padding: 0;
+      animation: navSlideIn 1s ease-out;
+    }
+
+    @keyframes navSlideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0px);
+      }
+    }
+
+    #navbar li { 
+      list-style: none; 
+      position: relative;
+      animation: navItemFadeIn 0.8s ease-out forwards;
+      opacity: 0;
+    }
+
+    #navbar li:nth-child(1) { animation-delay: 0.1s; }
+    #navbar li:nth-child(2) { animation-delay: 0.2s; }
+    #navbar li:nth-child(3) { animation-delay: 0.3s; }
+    #navbar li:nth-child(4) { animation-delay: 0.4s; }
+    #navbar li:nth-child(5) { animation-delay: 0.5s; }
+
+    @keyframes navItemFadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0px);
+      }
+    }
+
+    #navbar li a { 
+      text-decoration: none; 
+      font-size: 15px; 
+      font-weight: 600; 
+      color: #ffffff;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+      padding: 10px 18px; 
+      border-radius: 25px; 
+      display: block;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #navbar li a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    #navbar li a:hover::before {
+      left: 100%;
+    }
+
+    #navbar li a:hover, #navbar li a.active { 
+      color: #ebe4e4;
+      background: linear-gradient(135deg, rgba(37, 37, 37, 0.358), rgba(255, 255, 255, 0.2));
+      border: 1px solid rgba(79, 82, 83, 0.5);
+      box-shadow: 0 4px 15px rgba(58, 58, 58, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px) scale(1.05);
+      text-shadow: 0 1px 5px rgba(62, 61, 61, 0.033);
+    }
+
+    #navbar li a.active {
+      background: linear-gradient(135deg, rgba(67, 67, 67, 0.564), rgba(255, 255, 255, 0.3));
+      animation: activeGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes activeGlow {
+      0% {
+        box-shadow: 0 4px 15px rgba(72, 73, 73, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      }
+      100% {
+        box-shadow: 0 6px 20px rgba(61, 62, 62, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      }
+    }
+
+    @media (max-width: 768px) {
+      #header {
+        padding: 0 16px;
+        height: 60px;
+      }
+      .logo-container { margin-right: 10px; }
+      .logo-container img { max-height: 50px; }
+      #navbar { 
+        gap: 4px; 
+        flex-wrap: nowrap; 
+        justify-content: flex-end; 
+        overflow-x: auto; 
+        -ms-overflow-style: none; 
+        scrollbar-width: none; 
+        width: 100%;
+        padding: 0 5px;
+      }
+      #navbar::-webkit-scrollbar { display: none; }
+      #navbar li { margin: 0; padding: 0; flex-shrink: 0; }
+      #navbar li a { padding: 6px 12px; font-size: 12px; min-width: auto; white-space: nowrap; border-radius: 15px; }
+    }
+
+    @media (max-width: 480px) {
+      #header { padding: 0 12px; height: 55px; }
+      .logo-container img { max-height: 45px; }
+      #navbar li a { padding: 5px 10px; font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+<!-- MOBILE HEADER (same as tshirts.html) -->
+<style>
+  #rf-mobile-header { display: none; }
+  @media (max-width: 768px) {
+    #header { display: none !important; }
+    #rf-mobile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
+      background: #000;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+    .rf-mh-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .rf-mh-logo { height: 40px; width: auto; display: block; }
+    .rf-mh-brand { height: 34px; width: auto; display: block; }
+    .rf-mh-right { display: flex; align-items: center; gap: 8px; }
+    .rf-icon-btn { background: #ffffff; border: 1px solid rgba(255,255,255,0.25); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; transition: background 0.2s ease; }
+    .rf-icon-btn:hover { background: #f0f0f0; }
+    .rf-icon-img { height: 20px; width: 20px; object-fit: contain; pointer-events: none; display: block; }
+    .rf-user-wrap { position: relative; }
+    .rf-user-menu {
+      position: absolute; right: 0; top: 46px; width: 180px; background: #000;
+      border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; overflow: hidden;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+      max-height: 0; opacity: 0; transform: translateY(-6px);
+      transition: max-height 220ms ease, opacity 180ms ease, transform 220ms ease;
+    }
+    .rf-user-menu.open { max-height: 360px; opacity: 1; transform: translateY(0); }
+    .rf-user-menu a { display: block; padding: 10px 12px; color: #fff; text-decoration: none; font-size: 14px; }
+    .rf-user-menu a:hover { background: #111; }
+  }
+</style>
+
+<div id="rf-mobile-header" role="banner">
+  <div class="rf-mh-left">
+    <img class="rf-mh-logo" src="img/prince.png" alt="RAW FADE logo">
+    <a href="index.html"><img class="rf-mh-brand" src="img/RAW%20FADE%20Logo%20Design1.png" alt="RAW FADE brand"></a>
+  </div>
+  <div class="rf-mh-right">
+    <button class="rf-icon-btn" id="rfNotifyBtn" title="Notifications" aria-label="Notifications">
+      <img class="rf-icon-img" src="img/pngwing.com (17).png" alt="">
+    </button>
+    <div class="rf-user-wrap">
+      <button class="rf-icon-btn" id="rfUserBtn" aria-haspopup="true" aria-expanded="false" aria-controls="rfUserMenu" title="Account" aria-label="Account">
+        <img class="rf-icon-img" src="img/pngwing.com (15).png" alt="">
+      </button>
+      <nav id="rfUserMenu" class="rf-user-menu" role="menu" aria-hidden="true">
+        <a role="menuitem" href="login.html">login/sign</a>
+        <a role="menuitem" href="shop.html">shop</a>
+        <a role="menuitem" href="shirts.html">shirts</a>
+        <a role="menuitem" href="tshirts.html">tshirts</a>
+        <a role="menuitem" href="jeans.html">jeans</a>
+        <a role="menuitem" href="shorts.html">shorts</a>
+        <a role="menuitem" href="jackets.html">jackets</a>
+        <a role="menuitem" href="cart.html">cart</a>
+        <a role="menuitem" href="my-orders.html">My Orders</a>
+        <a role="menuitem" href="my-address.html">My Address</a>
+        <a role="menuitem" href="#" id="rfLogoutLink">logout</a>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const userBtn = document.getElementById('rfUserBtn');
+    const menu = document.getElementById('rfUserMenu');
+    const notifyBtn = document.getElementById('rfNotifyBtn');
+
+    function closeMenu() {
+      if (menu) {
+        menu.classList.remove('open');
+        menu.setAttribute('aria-hidden', 'true');
+        if (userBtn) userBtn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    if (userBtn && menu) {
+      userBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const willOpen = !menu.classList.contains('open');
+        if (willOpen) {
+          menu.classList.add('open');
+          menu.setAttribute('aria-hidden', 'false');
+          userBtn.setAttribute('aria-expanded', 'true');
+        } else {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!menu.contains(e.target) && e.target !== userBtn) closeMenu();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeMenu();
+      });
+    }
+
+    if (notifyBtn) {
+      notifyBtn.addEventListener('click', function () {
+        alert('No new notifications');
+      });
+    }
+
+    if (menu) {
+      const authItem = menu.querySelector('a[href="login.html"]');
+      const logoutLink = menu.querySelector('#rfLogoutLink');
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+
+      if (authItem) {
+        if (token && username) {
+          authItem.textContent = username;
+          authItem.href = 'shop.html';
+        } else {
+          authItem.textContent = 'login/sign';
+          authItem.href = 'login.html';
+        }
+      }
+
+      if (logoutLink) {
+        if (token && username) {
+          logoutLink.style.display = 'block';
+        } else {
+          logoutLink.style.display = 'none';
+        }
+        logoutLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          localStorage.removeItem('token');
+          localStorage.removeItem('username');
+          localStorage.removeItem('email');
+          closeMenu();
+          window.location.href = 'index.html';
+        });
+      }
+    }
+  })();
+</script>
+
+<header id="header">
+  <div class="logo-container">
+    <a href="index.html"><img src="img/logo1.png" alt="RAW FADE Logo"></a>
+  </div>
+  <nav>
+    <ul id="navbar">
+      <li><a href="shirts.html">SHIRTS</a></li>
+      <li><a href="tshirts.html">T-SHIRTS</a></li>
+      <li><a href="jeans.html">JEANS</a></li>
+      <li><a href="shorts.html">SHORTS</a></li>
+      <li><a href="jackets.html">JACKETS</a></li>
+    </ul>
+  </nav>
+</header>
+  <div class="page-wrap">
+    <h1>My Address</h1>
+    <p class="muted">Manage your shipping address. We also show the latest address from your orders.</p>
+
+    <div class="card">
+      <h3 style="margin-top:0;">Saved Address</h3>
+      <form id="addressForm">
+        <div class="field">
+          <span class="label">Full Name</span>
+          <input type="text" id="a_name" required />
+        </div>
+        <div class="field">
+          <span class="label">Phone</span>
+          <input type="text" id="a_phone" required />
+        </div>
+        <div class="field">
+          <span class="label">Address</span>
+          <textarea id="a_address" rows="2" required></textarea>
+        </div>
+        <div class="field">
+          <span class="label">City</span>
+          <input type="text" id="a_city" required />
+        </div>
+        <div class="field">
+          <span class="label">State</span>
+          <input type="text" id="a_state" required />
+        </div>
+        <div class="field">
+          <span class="label">Postal Code</span>
+          <input type="text" id="a_postal" required />
+        </div>
+        <div class="field">
+          <span class="label">Country</span>
+          <input type="text" id="a_country" required />
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Save Address</button>
+          <button type="button" id="a_clear" class="btn btn-secondary">Clear</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="addressCard" class="card" style="display:none; margin-top:16px;"></div>
+    <div id="addressMessage" class="muted"></div>
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:8080/api';
+
+    function loadSavedAddressForm() {
+      const saved = JSON.parse(localStorage.getItem('savedAddress') || 'null');
+      if (!saved) return;
+      document.getElementById('a_name').value = saved.name || '';
+      document.getElementById('a_phone').value = saved.phone || '';
+      document.getElementById('a_address').value = saved.address || '';
+      document.getElementById('a_city').value = saved.city || '';
+      document.getElementById('a_state').value = saved.state || '';
+      document.getElementById('a_postal').value = saved.postalCode || '';
+      document.getElementById('a_country').value = saved.country || '';
+    }
+
+    async function loadMyAddress() {
+      const card = document.getElementById('addressCard');
+      const msg = document.getElementById('addressMessage');
+      card.style.display = 'none';
+      msg.textContent = '';
+
+      const email = localStorage.getItem('email');
+      if (!email) {
+        msg.textContent = 'Please login and place an order so we can remember your address.';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE.replace('/api','')}/api/orders`);
+        if (!res.ok) {
+          msg.textContent = 'Failed to load address from server.';
+          return;
+        }
+        const orders = await res.json();
+        const mine = orders.filter(o => (o.email || '').toLowerCase() === email.toLowerCase());
+        if (!mine.length) {
+          msg.textContent = 'No past orders found to determine your address yet.';
+          return;
+        }
+
+        mine.sort((a,b) => (a.id||0) < (b.id||0) ? 1 : -1);
+        const latest = mine[0];
+
+        card.innerHTML = `
+          <div class="field"><span class="label">Name (from last order)</span>${(latest.firstName || '')} ${(latest.lastName || '')}</div>
+          <div class="field"><span class="label">Email</span>${latest.email || ''}</div>
+          <div class="field"><span class="label">Phone</span>${latest.phone || ''}</div>
+          <div class="field"><span class="label">Address</span>${latest.address || ''}</div>
+          <div class="field"><span class="label">City</span>${latest.city || ''}</div>
+          <div class="field"><span class="label">State</span>${latest.state || ''}</div>
+          <div class="field"><span class="label">Postal Code</span>${latest.postalCode || ''}</div>
+          <div class="field"><span class="label">Country</span>${latest.country || ''}</div>
+        `;
+        card.style.display = 'block';
+      } catch (e) {
+        console.error('Failed to load my address', e);
+        msg.textContent = 'Error loading your address.';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof authManager !== 'undefined') {
+        authManager.init();
+      }
+      loadSavedAddressForm();
+      loadMyAddress();
+
+      const form = document.getElementById('addressForm');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const saved = {
+          name: document.getElementById('a_name').value.trim(),
+          phone: document.getElementById('a_phone').value.trim(),
+          address: document.getElementById('a_address').value.trim(),
+          city: document.getElementById('a_city').value.trim(),
+          state: document.getElementById('a_state').value.trim(),
+          postalCode: document.getElementById('a_postal').value.trim(),
+          country: document.getElementById('a_country').value.trim()
+        };
+        localStorage.setItem('savedAddress', JSON.stringify(saved));
+        document.getElementById('addressMessage').textContent = 'Address saved on this device.';
+      });
+
+      document.getElementById('a_clear').addEventListener('click', () => {
+        localStorage.removeItem('savedAddress');
+        document.getElementById('addressForm').reset();
+        document.getElementById('addressMessage').textContent = 'Saved address cleared.';
+      });
+    });
+  </script>
+</body>
+</html>

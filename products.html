@@ -1,0 +1,30 @@
+<!-- ... existing code ... -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<!-- ... existing code ... -->
+
+<!-- Add near the end of body: normalize relative image URLs to backend -->
+<script>
+(function () {
+  const API_BASE = (
+    localStorage.getItem('apiBase') ||
+    (window.API_BASE ? String(window.API_BASE) : '') ||
+    'http://localhost:8080'
+  ).replace(/\/$/, '');
+
+  function resolveImageUrl(src) {
+    if (!src) return '';
+    const trimmed = String(src).trim();
+    if (/^(https?:)?\/\//i.test(trimmed)) return trimmed;
+    if (trimmed.startsWith('/')) return API_BASE + trimmed;
+    return API_BASE + '/' + trimmed.replace(/^(\.\/|\/)/, '');
+  }
+
+  // Rewrite any images with relative paths (e.g., /uploads/products/...)
+  document.querySelectorAll('img').forEach(img => {
+    const current = img.getAttribute('src') || '';
+    const next = resolveImageUrl(current);
+    if (next !== current) img.setAttribute('src', next);
+  });
+})();
+</script>
+<!-- ... existing code ... -->

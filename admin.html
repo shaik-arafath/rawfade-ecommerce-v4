@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | RAW FADE</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg: #0e0e0f;
+      --panel: #161618;
+      --panel-2: #1c1c20;
+      --text: #ffffff;
+      --muted: #bdbdbd;
+      --accent: #ffd700;
+      --border: #2a2a2e;
+      --danger: #ff4d4f;
+      --success: #2ecc71;
+      --warning: #f39c12;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji'; }
+
+    .admin-shell { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .sidebar { background: var(--panel); border-right: 1px solid var(--border); padding: 18px 14px; position: sticky; top: 0; height: 100vh; }
+    .brand { display: flex; align-items: center; gap: 8px; padding: 8px 10px; margin-bottom: 12px; }
+    .brand img { height: 28px; width: auto; }
+    .brand span { font-weight: 700; letter-spacing: .4px; }
+
+    .nav { display: grid; gap: 6px; margin-top: 10px; }
+    .nav button { display: flex; align-items: center; gap: 10px; width: 100%; background: transparent; color: var(--text); border: 1px solid transparent; padding: 10px 12px; border-radius: 10px; cursor: pointer; text-align: left; transition: .15s ease; }
+    .nav button:hover { background: var(--panel-2); border-color: var(--border); }
+    .nav button.active { background: #22222a; border-color: var(--border); color: var(--accent); }
+
+    .content { display: grid; grid-template-rows: 64px 1fr; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 1px solid var(--border); background: var(--panel); position: sticky; top: 0; z-index: 5; }
+    .topbar .actions { display: flex; align-items: center; gap: 10px; }
+    .btn { background: var(--accent); color: #111; border: none; border-radius: 8px; padding: 8px 12px; font-weight: 700; cursor: pointer; }
+    .btn.secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+
+    main { padding: 18px; }
+    .cards { display: grid; grid-template-columns: repeat(4, minmax(160px,1fr)); gap: 12px; }
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+    .card h4 { margin: 0 0 6px; font-size: 13px; color: var(--muted); font-weight: 600; }
+    .card .value { font-size: 28px; font-weight: 800; }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 12px; }
+    .toolbar .search { flex: 1; }
+    input[type="text"], input[type="number"], textarea { width: 100%; background: #111114; color: var(--text); border: 1px solid var(--border); padding: 10px 12px; border-radius: 10px; outline: none; }
+    textarea { min-height: 80px; resize: vertical; }
+
+    table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    thead { background: var(--panel-2); }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
+    tbody tr:hover { background: #1a1a22; }
+    .table-actions { display: flex; gap: 8px; }
+    .chip { padding: 4px 8px; border-radius: 999px; border: 1px solid var(--border); font-size: 12px; }
+
+    .grid { display: grid; grid-template-columns: 1fr 360px; gap: 16px; }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+
+    .danger { color: #fff; background: transparent; border: 1px solid var(--danger); }
+    .success { color: #111; background: var(--success); border: 1px solid var(--success); }
+    .warning { color: #111; background: var(--warning); border: 1px solid var(--warning); }
+
+    .muted { color: var(--muted); }
+
+    @media (max-width: 1024px) {
+      .admin-shell { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; display: flex; gap: 8px; overflow-x: auto; }
+      .content { grid-template-rows: 56px 1fr; }
+      .cards { grid-template-columns: repeat(2, 1fr); }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+ </head>
+ <body>
+  <script>
+    // Simple additional security gate for admin page
+    (function () {
+      const REQUIRED_ADMIN_PASS = 'Prasad0143@';
+      const SESSION_KEY = 'adminSecurityPassed';
+
+      try {
+        // If already validated this session, skip prompt
+        if (window.sessionStorage && sessionStorage.getItem(SESSION_KEY) === 'true') {
+          return;
+        }
+
+        const entered = window.prompt('Enter admin security password:');
+        if (entered === REQUIRED_ADMIN_PASS) {
+          if (window.sessionStorage) {
+            sessionStorage.setItem(SESSION_KEY, 'true');
+          }
+          return;
+        }
+
+        alert('Incorrect admin password. Redirecting...');
+        window.location.href = 'index.html';
+      } catch (e) {
+        // On any error, fail closed and redirect to site
+        window.location.href = 'index.html';
+      }
+    })();
+  </script>
+  <div class="admin-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="img/logo1.png" alt="RAW FADE" />
+        <span>Admin</span>
+      </div>
+      <div class="nav">
+        <button class="active" data-section="dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</button>
+        <button data-section="products"><i class="fa-solid fa-shirt"></i> Products</button>
+        <button data-section="orders"><i class="fa-solid fa-receipt"></i> Orders</button>
+        <button data-section="users"><i class="fa-solid fa-user"></i> Users</button>
+        <button data-section="settings"><i class="fa-solid fa-gear"></i> Settings</button>
+      </div>
+    </aside>
+
+    <div class="content">
+      <header class="topbar">
+        <div class="actions">
+          <button class="btn secondary" id="backToSite"><i class="fa-solid fa-arrow-left"></i> Back to site</button>
+        </div>
+        <div class="actions">
+          <span id="adminUser" class="muted"></span>
+          <button class="btn" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+      </header>
+
+      <main>
+        <!-- Dashboard -->
+        <section id="section-dashboard" class="section active">
+          <div class="cards">
+            <div class="card">
+              <h4>Total Products</h4>
+              <div class="value" id="statProducts">-</div>
+            </div>
+            <div class="card">
+              <h4>Orders</h4>
+              <div class="value" id="statOrders">-</div>
+            </div>
+            <div class="card">
+              <h4>Users</h4>
+              <div class="value" id="statUsers">-</div>
+            </div>
+            <div class="card">
+              <h4>Low Stock</h4>
+              <div class="value" id="statLowStock">-</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Products -->
+        <section id="section-products" class="section">
+          <div class="toolbar">
+            <div class="search"><input id="productSearch" type="text" placeholder="Search products by title, brand or category..." /></div>
+            <button class="btn" id="refreshProducts"><i class="fa-solid fa-rotate"></i> Refresh</button>
+          </div>
+          <div class="grid">
+            <div class="panel">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Category</th>
+                    <th>Brand</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="productsTbody"></tbody>
+              </table>
+            </div>
+
+            <div class="panel">
+              <h3 style="margin:0 0 8px;">Create / Edit Product</h3>
+              <form id="productForm">
+                <input type="hidden" id="p_id" />
+                <div style="display:grid; gap:10px;">
+                  <div><label class="muted">Title</label><input id="p_title" type="text" required /></div>
+                  <div><label class="muted">Description</label><textarea id="p_description" placeholder="Optional"></textarea></div>
+                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div><label class="muted">Price</label><input id="p_price" type="number" step="0.01" required /></div>
+                    <div><label class="muted">Stock</label><input id="p_stock" type="number" required /></div>
+                  </div>
+                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div><label class="muted">Category</label><input id="p_category" type="text" /></div>
+                    <div><label class="muted">Brand</label><input id="p_brand" type="text" /></div>
+                  </div>
+                  <div><label class="muted">Image Path</label><input id="p_imagePath" type="text" placeholder="e.g. img/products/c1-1.png" /></div>
+                  <div style="margin-top: 8px;">
+                    <input type="file" id="p_imageFile" accept="image/*" style="display: none;" />
+                    <button type="button" id="p_galleryBtn" class="btn">Add Image</button>
+                    <img id="p_imagePreview" style="max-width: 100%; max-height: 140px; display: none; margin-top: 8px; border: 1px solid #ddd;" />
+                  </div>
+                  <div class="actions" style="display:flex; gap:8px;">
+                    <button type="submit" class="btn success" id="saveProduct">Save</button>
+                    <button type="button" class="btn secondary" id="resetForm">Reset</button>
+                    <button type="button" class="btn danger" id="deleteProduct" style="display:none;">Delete</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- Orders -->
+        <section id="section-orders" class="section">
+          <div class="panel">
+            <h3 style="margin-top:0;">Orders</h3>
+            <p class="muted">Recent customer orders after successful payment.</p>
+            <div class="toolbar" style="margin-top:10px;">
+              <div class="search"><input id="ordersSearch" type="text" placeholder="Search by customer, email or phone..." /></div>
+              <button class="btn" id="refreshOrders"><i class="fa-solid fa-rotate"></i> Refresh</button>
+            </div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Email / Phone</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Items</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Users (placeholder) -->
+        <section id="section-users" class="section">
+          <div class="panel">
+            <h3 style="margin-top:0;">Users</h3>
+            <p class="muted">User management placeholder. Hook to backend when endpoints are available.</p>
+          </div>
+        </section>
+
+        <!-- Settings (placeholder) -->
+        <section id="section-settings" class="section">
+          <div class="panel">
+            <h3 style="margin-top:0;">Settings</h3>
+            <p class="muted">General settings placeholder.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

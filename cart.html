@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Shopping Cart - Krishna Creations</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <link rel="stylesheet" href="style.css">
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+            html { overflow-x: hidden; }
+
+            /* Colors */
+            :root {
+                --bg: #111;
+                --panel: #181818;
+                --text: #fff;
+                --muted: #bbb;
+                --accent: #fff;
+                --border: #333;
+            }
+
+            body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+            /* Header */
+            #header { 
+                background: var(--panel); 
+                border-bottom: 1px solid rgba(255,255,255,0.1); 
+                position: sticky; 
+                top: 0; 
+                z-index: 999; 
+                padding: 0 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 80px;
+                overflow: hidden;
+            }
+
+            .logo-container {
+                flex: 0 0 auto;
+                margin-right: 15px;
+                display: flex;
+                align-items: center;
+                padding: 0;
+                height: 100%;
+                overflow: hidden;
+            }
+
+            .logo-container img {
+                height: 100%;
+                width: auto;
+                max-height: 150px;
+                display: block;
+                margin: 0;
+                padding: 0;
+                transform: none;
+            }
+            
+            #header nav {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+            }
+            
+            /* NAVIGATION BAR: Make compact and horizontally scrollable on mobile */
+            #navbar {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin: 0;
+                padding: 0;
+            }
+            @media (max-width: 600px) {
+                #navbar {
+                    flex-wrap: nowrap;
+                    overflow-x: auto;
+                    gap: 4px;
+                    padding: 0 2px;
+                    font-size: 14px;
+                    background: var(--panel);
+                    border-radius: 0 0 10px 10px;
+                    min-height: 44px;
+                    width: 100%;
+                    justify-content: flex-start;
+                }
+                #navbar li a {
+                    padding: 6px 10px;
+                    font-size: 13px;
+                    white-space: nowrap;
+                    min-width: auto;
+                }
+            }
+            
+            #navbar li { 
+                list-style: none; 
+                position: relative; 
+            }
+            
+            #navbar li a { 
+                text-decoration: none; 
+                font-size: 15px; 
+                font-weight: 600; 
+                color: var(--text); 
+                transition: .2s ease; 
+                padding: 8px 16px;
+                border-radius: 20px;
+                display: block;
+                position: relative;
+            }
+            
+            #navbar li a:hover, 
+            #navbar li a.active { 
+                color: var(--accent); 
+                background: rgba(255,255,255,0.2);
+            }
+            
+            #navbar li a:hover::after, 
+            #navbar li a.active::after { 
+                content: ""; 
+                width: 60%; 
+                height: 2px; 
+                background: var(--accent); 
+                position: absolute; 
+                bottom: 2px; 
+                left: 20%; 
+            }
+            
+            @media (max-width: 600px) {
+                html, body { width: 100%; overflow-x: hidden; }
+                #header { padding: 8px 4px; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+                .logo-container { margin-bottom: 0; text-align: left; margin-left: 5px; right: 0; }
+                .logo-container img { max-height: 42px; display: block; }
+                nav { flex: 1 1 auto; overflow: hidden; }
+                #navbar { gap: 2px; flex-wrap: nowrap; justify-content: flex-end; overflow-x: auto; -ms-overflow-style: none; scrollbar-width: none; width: 100%; }
+                #navbar::-webkit-scrollbar { display: none; }
+                #navbar li { margin: 0; }
+                #navbar li a { font-size: 13px; padding: 8px 12px; white-space: nowrap; display: inline-block; text-align: center; min-width: 60px; }
+            }
+            
+            #navbar li a i.fa-shopping-cart {
+                font-size: 16px;
+                margin: 0;
+                padding: 0;
+            }
+            #navbar li a[href="cart.html"] {
+                padding: 4px 4px !important;
+                min-width: 28px !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--panel);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .cart-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+        .cart-table th, .cart-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+        .cart-table th {
+            background-color: rgba(255,255,255,0.05);
+            font-weight: bold;
+            color: var(--accent);
+        }
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .quantity-input {
+            width: 60px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--bg);
+            color: var(--text);
+        }
+        .remove-btn {
+            background: rgba(255,0,0,0.2);
+            color: var(--text);
+            border: 1px solid rgba(255,0,0,0.3);
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .remove-btn:hover {
+            background: rgba(255,0,0,0.4);
+        }
+        .cart-totals {
+            background: var(--panel);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: var(--text);
+            border: 1px solid var(--border);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        @media (max-width: 768px) {
+            .cart-totals {
+                position: sticky;
+                bottom: 0;
+                z-index: 100;
+                margin-bottom: 0;
+                border-radius: 8px 8px 0 0;
+                box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
+            }
+        }
+        .checkout-btn {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .checkout-btn:hover {
+            background: rgba(255,255,255,0.8);
+        }
+        .checkout-btn:disabled {
+            background: var(--border);
+            cursor: not-allowed;
+            color: var(--muted);
+        }
+        .login-prompt {
+            text-align: center;
+            padding: 40px;
+            background: var(--panel);
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+        }
+        .login-prompt h3 {
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+        .login-btn {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .login-btn:hover {
+            background: rgba(255,255,255,0.8);
+        }
+        .container {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .container h1 {
+            color: var(--text);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<!-- MOBILE HEADER (only visible on screens <= 768px) -->
+<style>
+  /* Base: hidden by default (desktop) */
+  #rf-mobile-header { display: none; }
+
+  /* Show mobile header, hide desktop header/nav on mobile */
+  @media (max-width: 768px) {
+    /* Hide your existing desktop header on mobile only */
+    #header { display: none !important; }
+
+    /* Mobile header container */
+    #rf-mobile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
+      background: #000;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    /* Left section: logo + brand */
+    .rf-mh-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .rf-mh-logo { height: 40px; width: auto; display: block; }
+    .rf-mh-brand { height: 34px; width: auto; display: block; }
+
+	    /* Right section: icons */
+	    .rf-mh-right { display: flex; align-items: center; gap: 8px; }
+	    .rf-icon-btn { background: #ffffff; border: 1px solid rgba(255,255,255,0.25); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; transition: background 0.2s ease; }
+	    .rf-icon-btn:hover { background: #f0f0f0; }
+	    .rf-icon-img { height: 20px; width: 20px; object-fit: contain; pointer-events: none; display: block; }
+
+    /* Dropdown menu (slide-down) */
+    .rf-user-wrap { position: relative; }
+    .rf-user-menu {
+      position: absolute; right: 0; top: 46px; width: 180px; background: #000;
+      border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; overflow: hidden;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+      max-height: 0; opacity: 0; transform: translateY(-6px);
+      transition: max-height 220ms ease, opacity 180ms ease, transform 220ms ease;
+    }
+    .rf-user-menu.open { max-height: 360px; opacity: 1; transform: translateY(0); }
+    .rf-user-menu a { display: block; padding: 10px 12px; color: #fff; text-decoration: none; font-size: 14px; }
+    .rf-user-menu a:hover { background: #111; }
+  }
+</style>
+
+<div id="rf-mobile-header" role="banner">
+  <div class="rf-mh-left">
+    <img class="rf-mh-logo" src="img/prince.png" alt="RAW FADE logo">
+    <a href="index.html"><img class="rf-mh-brand" src="img/RAW%20FADE%20Logo%20Design1.png" alt="RAW FADE brand"></a>
+  </div>
+  <div class="rf-mh-right">
+    <button class="rf-icon-btn" id="rfNotifyBtn" title="Notifications" aria-label="Notifications">
+      <img class="rf-icon-img" src="img/pngwing.com (17).png" alt="">
+    </button>
+    <div class="rf-user-wrap">
+      <button class="rf-icon-btn" id="rfUserBtn" aria-haspopup="true" aria-expanded="false" aria-controls="rfUserMenu" title="Account" aria-label="Account">
+        <img class="rf-icon-img" src="img/pngwing.com (15).png" alt="">
+      </button>
+      <nav id="rfUserMenu" class="rf-user-menu" role="menu" aria-hidden="true">
+        <a role="menuitem" href="login.html">login/sign</a>
+        <a role="menuitem" href="shop.html">shop</a>
+        <a role="menuitem" href="shirts.html">shirts</a>
+        <a role="menuitem" href="tshirts.html">tshirts</a>
+        <a role="menuitem" href="jeans.html">jeans</a>
+        <a role="menuitem" href="shorts.html">shorts</a>
+        <a role="menuitem" href="jackets.html">jackets</a>
+        <a role="menuitem" href="cart.html">cart</a>
+        <a role="menuitem" href="#" id="rfLogoutLink">logout</a>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const userBtn = document.getElementById('rfUserBtn');
+    const menu = document.getElementById('rfUserMenu');
+    const notifyBtn = document.getElementById('rfNotifyBtn');
+
+    function closeMenu() {
+      if (menu) {
+        menu.classList.remove('open');
+        menu.setAttribute('aria-hidden', 'true');
+        if (userBtn) userBtn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    if (userBtn && menu) {
+      userBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const willOpen = !menu.classList.contains('open');
+        if (willOpen) {
+          menu.classList.add('open');
+          menu.setAttribute('aria-hidden', 'false');
+          userBtn.setAttribute('aria-expanded', 'true');
+        } else {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!menu.contains(e.target) && e.target !== userBtn) closeMenu();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeMenu();
+      });
+    }
+
+    if (notifyBtn) {
+      notifyBtn.addEventListener('click', function () {
+        alert('No new notifications');
+      });
+    }
+
+    // Update mobile menu auth item based on login state
+    if (menu) {
+      const authItem = menu.querySelector('a[href="login.html"]');
+      const logoutLink = menu.querySelector('#rfLogoutLink');
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+
+      if (authItem) {
+        if (token && username) {
+          authItem.textContent = username;
+          authItem.href = 'shop.html';
+        } else {
+          authItem.textContent = 'login/sign';
+          authItem.href = 'login.html';
+        }
+      }
+
+      if (logoutLink) {
+        if (token && username) {
+          logoutLink.style.display = 'block';
+        } else {
+          logoutLink.style.display = 'none';
+        }
+        logoutLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          localStorage.removeItem('token');
+          localStorage.removeItem('username');
+          localStorage.removeItem('email');
+          closeMenu();
+          window.location.href = 'index.html';
+        });
+      }
+    }
+  })();
+</script>
+    <section id="header">
+        <div class="logo-container">
+            <a href="index.html"><img src="img/logo1.png" class="logo" alt="RAW FADE"></a>
+        </div>
+        <nav>
+            <ul id="navbar">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="login.html" id="loginLink">Login</a></li>
+                <li><a href="cart.html" class="active"><i class="fas fa-shopping-cart"></i></a></li>
+            </ul>
+        </nav>
+    </section>
+
+    <div class="container">
+        <h1>Shopping Cart</h1>
+        
+        <div id="cartContent">
+            <!-- Cart content will be loaded here -->
+            </div>
+
+        <div id="loginPrompt" class="login-prompt" style="display: none;"></div>
+            </div>
+
+        <script src="auth.js"></script>
+        <script src="cart.js"></script>
+        <script>
+        // Initialize cart page
+        async function initCartPage() {
+            // Always show cart content regardless of login status
+            document.getElementById('cartContent').style.display = 'block';
+            document.getElementById('loginPrompt').style.display = 'none';
+
+            // Load and display cart
+            const cart = await cartManager.loadCart();
+            if (cart && cart.items && cart.items.length > 0) {
+                displayCart(cart);
+            } else {
+                displayEmptyCart();
+            }
+        }
+
+        // Display cart items
+            function displayCart(cart) {
+            const cartContent = document.getElementById('cartContent');
+            
+            if (!cart.items || cart.items.length === 0) {
+                displayEmptyCart();
+                    return;
+                }
+
+            let html = `
+                <table class="cart-table">
+                        <thead>
+                            <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+            
+            let totalAmount = 0;
+
+                cart.items.forEach(item => {
+                const product = item.product;
+                const price = item.priceAtTime || product.price;
+                const total = price * item.quantity;
+                totalAmount += total;
+                
+                html += `
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                <img src="${product.imageUrl || 'img/products/c1-1.png'}" alt="${product.name}" class="product-image">
+                                <div style="margin-left: 10px;">
+                                    <h4>${product.name}</h4>
+                                    <p>${product.brand || ''}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>₹${price.toFixed(2)}</td>
+                        <td>
+                            <input type="number" value="${item.quantity}" min="1" class="quantity-input" 
+                                   onchange="updateQuantity(${product.id}, this.value)">
+                        </td>
+                        <td>₹${total.toFixed(2)}</td>
+                        <td>
+                            <button class="remove-btn" onclick="removeFromCart(${product.id})">Remove</button>
+                        </td>
+                        </tr>
+                    `;
+                });
+
+            html += `
+                        </tbody>
+                    </table>
+                
+                <div class="cart-totals">
+                    <h3>Cart Total: ₹${totalAmount.toFixed(2)}</h3>
+                    <button class="checkout-btn" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
+                    <button class="remove-btn" style="margin-top: 10px;" onclick="clearCart()">Clear Cart</button>
+                </div>
+            `;
+            
+            cartContent.innerHTML = html;
+        }
+
+        // Display empty cart
+        function displayEmptyCart() {
+            const cartContent = document.getElementById('cartContent');
+            cartContent.innerHTML = `
+                <div class="login-prompt">
+                    <h3>Your Cart is Empty</h3>
+                    <p>Add some products to your cart to get started!</p>
+                    <a href="shop.html" class="login-btn">Continue Shopping</a>
+                </div>
+            `;
+        }
+
+        // Update quantity using cart manager
+        function updateQuantity(productId, newQuantity) {
+            const success = cartManager.updateQuantity(productId, parseInt(newQuantity));
+            if (success) {
+                initCartPage(); // Reload cart display
+            }
+        }
+
+        // Remove from cart using cart manager
+        function removeFromCart(productId) {
+            const success = cartManager.removeFromCart(productId);
+            if (success) {
+                initCartPage(); // Reload cart display
+            }
+        }
+
+        // Proceed to checkout
+        async function proceedToCheckout() {
+            if (!currentUser) {
+                alert('Please login to continue');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                // Get cart using cart manager
+                const cart = await cartManager.loadCart() || { items: [] };
+                
+                if (cart.items.length === 0) {
+                    alert('Your cart is empty. Please add items before checkout.');
+                    return;
+                }
+                
+                // Calculate total amount
+                const totalAmount = cart.items.reduce((total, item) => {
+                    const price = item.priceAtTime || item.product.price;
+                    return total + (price * item.quantity);
+                }, 0);
+                
+                // Ask user to select payment method
+                const paymentMethod = confirm('Would you like to pay with Razorpay? Click Cancel for Cash on Delivery') ? 'razorpay' : 'cod';
+                
+                // Check if backend is available
+                const backendAvailable = await isBackendAvailable();
+                
+                try {
+                    if (backendAvailable) {
+                        console.log('Backend server is running, using server API for COD order');
+                        
+                        // Create order on backend
+                        const orderResponse = await fetch(`${API_BASE_URL}/orders/create`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${currentUser.token}`
+                            },
+                            body: JSON.stringify({
+                                userId: currentUser.username,
+                                items: cart.items,
+                                totalAmount: totalAmount,
+                                paymentMethod: 'RAZORPAY'
+                            })
+                        });
+                        
+                        if (orderResponse.ok) {
+                            const orderData = await orderResponse.json();
+                            
+                            // Create a Razorpay order
+                            const options = {
+                                key: 'rzp_test_rFUCa9ROD1UuBY', // Your Razorpay test key
+                                amount: Math.round(totalAmount * 100),
+                                currency: 'INR',
+                                name: 'Krishna Creations',
+                                description: 'E-commerce Purchase',
+                                order_id: orderData.id,
+                                handler: function(response) {
+                                    verifyPaymentAndCreateOrder(response, totalAmount);
+                                },
+                                prefill: {
+                                    name: currentUser.username,
+                                    email: `${currentUser.username}@example.com`
+                                },
+                                theme: {
+                                    color: '#3399cc'
+                                }
+                            };
+                            
+                            const rzp = new Razorpay(options);
+                            try { 
+                                rzp.open(); 
+                            } catch (error) { 
+                                console.error('Error creating Razorpay order:', error); 
+                                alert('Error creating order: ' + error.message); 
+                            } 
+                        } else { 
+                            throw new Error('Failed to create order on server'); 
+                        }
+                    } else { 
+                        console.warn('Backend health check failed'); 
+                    } 
+                } catch (error) { 
+                    console.warn('Backend server not available, using local fallback:', error); 
+                    
+                    // Fallback to local implementation 
+                    if (paymentMethod === 'razorpay') { 
+                        // Create a simple order object for Razorpay 
+                        const options = { 
+                            key: 'rzp_test_rFUCa9ROD1UuBY', // Your Razorpay test key 
+                            amount: Math.round(totalAmount * 100), 
+                            currency: 'INR', 
+                            name: 'Krishna Creations', 
+                            description: 'E-commerce Purchase', 
+                            handler: function(response) { 
+                                alert('Payment successful! Order ID: ' + response.razorpay_payment_id); 
+                                clearCart(); 
+                                window.location.href = 'index.html'; 
+                            }, 
+                            prefill: { 
+                                name: currentUser.username, 
+                                email: `${currentUser.username}@example.com` 
+                            }, 
+                            theme: { 
+                                color: '#3399cc' 
+                            } 
+                        }; 
+                        
+                        const rzp = new Razorpay(options); 
+                        rzp.open(); 
+                    } else { 
+                        // Cash on Delivery 
+                        try { 
+                            createCODOrder(totalAmount); 
+                        } catch (err) { 
+                            console.error('Error with COD order:', err); 
+                            alert('Error with Cash on Delivery: ' + err.message); 
+                        } 
+                    } 
+                }
+            } catch (err) {
+                console.error('Error during checkout:', err);
+                alert('Error during checkout: ' + err.message);
+            }
+        }
+
+        // Verify payment and create order
+        async function verifyPaymentAndCreateOrder(paymentResponse, totalAmount) {
+            try {
+                // Get cart using cart manager
+                const cart = await cartManager.loadCart() || { items: [] };
+                
+                // Create a simple order object and store it in localStorage
+                const order = {
+                    id: paymentResponse.razorpay_payment_id,
+                    orderNumber: 'RZP-' + Math.floor(Math.random() * 10000),
+                    amount: totalAmount,
+                    paymentMethod: 'Razorpay',
+                    paymentId: paymentResponse.razorpay_payment_id,
+                    status: 'paid',
+                    createdAt: new Date().toISOString(),
+                    username: currentUser ? currentUser.username : 'guest',
+                    items: cart.items
+                };
+                
+                // Store order in localStorage for order history
+                const orders = JSON.parse(localStorage.getItem('orders')) || [];
+                orders.push(order);
+                localStorage.setItem('orders', JSON.stringify(orders));
+                
+                // Show success message
+                alert('Payment verified and order created successfully! Order ID: ' + order.orderNumber);
+                
+                // Clear cart and redirect to home
+                clearCart();
+                window.location.href = 'index.html';
+            } catch (err) {
+                console.error('Error verifying payment:', err);
+                alert('Error processing payment. Please contact support.');
+            }
+        }
+
+        // Create Cash on Delivery order
+        async function createCODOrder(totalAmount) {
+            try {
+                if (!currentUser) {
+                    alert('Please login to continue');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const shippingAddress = prompt('Please enter your shipping address:');
+                if (!shippingAddress) return;
+
+                // Get cart using cart manager
+                const cart = await cartManager.loadCart() || { items: [] };
+                
+                // Check if backend is available
+                const backendAvailable = await isBackendAvailable();
+                
+                if (backendAvailable) {
+                    console.log('Backend server is running, using server API for COD order');
+                    try {
+                        // Create order on backend
+                        const orderResponse = await fetch(`${API_BASE_URL}/orders/create`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${currentUser.token}`
+                            },
+                            body: JSON.stringify({
+                                userId: currentUser.username,
+                                items: cart.items,
+                                totalAmount: totalAmount,
+                                paymentMethod: 'COD',
+                                shippingAddress: shippingAddress
+                            })
+                        });
+                        
+                        if (orderResponse.ok) {
+                            const orderData = await orderResponse.json();
+                            
+                            // Show success message
+                            alert('COD order placed successfully! Order ID: ' + orderData.orderNumber);
+                            
+                            // Clear cart and redirect to home
+                            clearCart();
+                            window.location.href = 'index.html';
+                        } else {
+                            throw new Error('Failed to create order on server');
+                        }
+                    } catch (error) {
+                        console.error('Error creating COD order on server:', error);
+                        alert('Error creating order: ' + error.message);
+                    }
+                } else {
+                    console.warn('Backend health check failed');
+                    // Use local fallback instead of throwing error
+                    console.warn('Using local fallback for COD order');
+                    
+                    // Fallback to local implementation
+                    createLocalCODOrder(totalAmount, shippingAddress, cart);
+                }
+            } catch (error) {
+                console.warn('Backend server not available, using local fallback for COD order:', error);
+                createLocalCODOrder(totalAmount, shippingAddress, cart);
+            }
+        }
+        
+        // Function to create a local COD order when backend is unavailable
+        function createLocalCODOrder(totalAmount, shippingAddress, cart) {
+            // Create a simple order object and store it in localStorage
+            const order = {
+                id: 'local_cod_' + Date.now(),
+                orderNumber: 'COD-' + Math.floor(Math.random() * 10000),
+                amount: totalAmount,
+                paymentMethod: 'COD',
+                status: 'pending',
+                shippingAddress: shippingAddress,
+                createdAt: new Date().toISOString(),
+                username: currentUser ? currentUser.username : 'guest',
+                items: cart.items
+            };
+            
+            // Store order in localStorage for order history
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            orders.push(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+            
+            // Show success message
+            alert('COD order placed successfully! Order ID: ' + order.orderNumber);
+            
+            // Clear cart and redirect to home
+            clearCart();
+            window.location.href = 'index.html';
+        }
+
+        // Clear cart using cart manager
+        function clearCart() {
+            const success = cartManager.clearCart();
+            if (success) {
+                initCartPage(); // Reload cart display
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initCartPage();
+        });
+
+        // Define isBackendAvailable function
+        async function isBackendAvailable() {
+            try {
+                const response = await fetch('http://localhost:8080/api/actuator/health', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                return response.ok;
+            } catch (error) {
+                console.warn('Backend health check failed:', error);
+                return false;
+            }
+        }
+
+        // Define API_BASE_URL
+        const API_BASE_URL = 'http://localhost:8080/api';
+        </script>
+
+        <footer class="section-p1">
+            <div class="col">
+                <div class="footer-logo-container">
+                    <img class="logo" src="img/logo1.png" alt="RAW FADE" style="max-width: 150px;">
+                </div>
+                <h4>Contact</h4>
+                <p><strong>Address:</strong>Proddatur City in Andhra Pradesh, India</p>
+                <p><strong>Phone:</strong>+91 7777911229</p>
+                <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+                <div class="follow">
+                    <h4>Follow us</h4>
+                    <div class="icon">
+                        <i class="fab fa-facebook-f"></i>
+                        <i class="fab fa-twitter"></i>
+                        <i class="fab fa-instagram"></i>
+                        <i class="fab fa-pinterest-p"></i>
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <h4>ABOUT RAW FADE</h4>
+                <a href="#">About Us</a>
+                <a href="#">Delivery Information</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms & Conditions</a>
+                <a href="#">Contact Us</a>
+            </div>
+
+            <div class="col">
+                <h4>My Account</h4>
+                <a href="#">Sign In</a>
+                <a href="#">View Cart</a>
+                <a href="#">My Wishlist</a>
+                <a href="#">Track My Order</a>
+                <a href="#">Help</a>
+            </div>
+
+            <div class="col install">
+                <h4>Install App</h4>
+                <p>From App Store or Google Play</p>
+                <div class="row">
+                    <img src="img/pay/app.jpg" alt="">
+                    <img src="img/pay/play.jpg" alt="">
+                </div>
+                <p>Secured Payment Gateways</p>
+                <img src="img/pay/pay.png" alt="">
+            </div>
+        </footer>
+        <section id="newsletter" class="section-p1 section-m1" style="background: var(--panel); color: var(--text); padding: 40px 20px; margin: 40px 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+            <div class="newstext" style="flex: 1; min-width: 300px;">
+                <h4 style="color: var(--text); font-size: 24px; margin-bottom: 10px;">Sign Up For Newsletters</h4>
+                <p style="color: var(--muted); font-size: 16px;">Get E-mail updates about our latest shop and <span style="color: var(--accent);">special offers.</span></p>
+            </div>
+            <div class="form" style="flex: 1; min-width: 300px; display: flex; margin-top: 20px;">
+                <input type="text" placeholder="Your email address" id="signUp" style="width: 100%; padding: 12px 15px; border-radius: 5px 0 0 5px; border: 1px solid var(--border); background: var(--bg); color: var(--text);">
+                <button class="normal" style="padding: 12px 20px; background: var(--accent); color: var(--bg); border: none; border-radius: 0 5px 5px 0; font-weight: bold; cursor: pointer;">Sign Up</button>
+            </div>
+        </section>
+    </body>
+</html>

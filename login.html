@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAW FADE - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        html { overflow-x: hidden; }
+
+        /* Colors */
+        :root {
+            --bg: #111;
+            --panel: #181818;
+            --text: #fff;
+            --muted: #bbb;
+            --accent: #fff;
+            --border: #333;
+        }
+
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        /* Header */
+        #header { 
+            background: var(--panel); 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            position: sticky; 
+            top: 0; 
+            z-index: 999; 
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+            overflow: hidden;
+        }
+
+        .logo-container {
+            flex: 0 0 auto;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .logo-container img {
+            height: 100%;
+            width: auto;
+            max-height: 150px;
+            display: block;
+            margin: 0;
+            padding: 0;
+            transform: none;
+        }
+
+        #header nav {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        #navbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+        }
+
+        #navbar li { 
+            list-style: none; 
+            position: relative; 
+        }
+
+        #navbar li a { 
+            text-decoration: none; 
+            font-size: 15px; 
+            font-weight: 600; 
+            color: var(--text); 
+            transition: .2s ease; 
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: block;
+            position: relative;
+        }
+
+        #navbar li a:hover, 
+        #navbar li a.active { 
+            color: var(--accent); 
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Login Container */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px);
+            padding: 40px 20px;
+        }
+
+        .login-box {
+            background: var(--panel);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid var(--border);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h2 {
+            color: var(--text);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        .form-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px;
+            background: var(--bg);
+            color: var(--muted);
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: rgba(255,255,255,0.9);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            background: var(--muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .success-message {
+            color: #51cf66;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .form-content {
+            display: none;
+        }
+
+        .form-content.active {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .login-box {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<!-- MOBILE HEADER (only visible on screens <= 768px) -->
+<style>
+  /* Base: hidden by default (desktop) */
+  #rf-mobile-header { display: none; }
+
+  /* Show mobile header, hide desktop header/nav on mobile */
+  @media (max-width: 768px) {
+    /* Hide your existing desktop header on mobile only */
+    #header { display: none !important; }
+
+    /* Mobile header container */
+    #rf-mobile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
+      background: #000;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    /* Left section: logo + brand */
+    .rf-mh-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .rf-mh-logo { height: 40px; width: auto; display: block; }
+    .rf-mh-brand { height: 34px; width: auto; display: block; }
+
+    /* Right section: icons */
+    .rf-mh-right { display: flex; align-items: center; gap: 8px; }
+    .rf-icon-btn { background: #ffffff; border: 1px solid rgba(255,255,255,0.25); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; transition: background 0.2s ease; }
+    .rf-icon-btn:hover { background: #f0f0f0; }
+    .rf-icon-img { height: 20px; width: 20px; object-fit: contain; pointer-events: none; display: block; }
+
+    /* Dropdown menu (slide-down) */
+    .rf-user-wrap { position: relative; }
+    .rf-user-menu {
+      position: absolute; right: 0; top: 46px; width: 180px; background: #000;
+      border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; overflow: hidden;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+      max-height: 0; opacity: 0; transform: translateY(-6px);
+      transition: max-height 220ms ease, opacity 180ms ease, transform 220ms ease;
+    }
+    .rf-user-menu.open { max-height: 360px; opacity: 1; transform: translateY(0); }
+    .rf-user-menu a { display: block; padding: 10px 12px; color: #fff; text-decoration: none; font-size: 14px; }
+    .rf-user-menu a:hover { background: #111; }
+  }
+</style>
+
+<div id="rf-mobile-header" role="banner">
+  <div class="rf-mh-left">
+    <img class="rf-mh-logo" src="img/prince.png" alt="RAW FADE logo">
+    <a href="index.html"><img class="rf-mh-brand" src="img/RAW%20FADE%20Logo%20Design1.png" alt="RAW FADE brand"></a>
+  </div>
+  <div class="rf-mh-right">
+    <button class="rf-icon-btn" id="rfNotifyBtn" title="Notifications" aria-label="Notifications">
+      <img class="rf-icon-img" src="img/pngwing.com (17).png" alt="">
+    </button>
+    <div class="rf-user-wrap">
+      <button class="rf-icon-btn" id="rfUserBtn" aria-haspopup="true" aria-expanded="false" aria-controls="rfUserMenu" title="Account" aria-label="Account">
+        <img class="rf-icon-img" src="img/pngwing.com (15).png" alt="">
+      </button>
+      <nav id="rfUserMenu" class="rf-user-menu" role="menu" aria-hidden="true">
+        <a role="menuitem" href="login.html">login/sign</a>
+        <a role="menuitem" href="shop.html">shop</a>
+        <a role="menuitem" href="shirts.html">shirts</a>
+        <a role="menuitem" href="tshirts.html">tshirts</a>
+        <a role="menuitem" href="jeans.html">jeans</a>
+        <a role="menuitem" href="shorts.html">shorts</a>
+        <a role="menuitem" href="jackets.html">jackets</a>
+        <a role="menuitem" href="cart.html">cart</a>
+        <a role="menuitem" href="#" id="rfLogoutLink">logout</a>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const userBtn = document.getElementById('rfUserBtn');
+    const menu = document.getElementById('rfUserMenu');
+    const notifyBtn = document.getElementById('rfNotifyBtn');
+
+    function closeMenu() {
+      if (menu) {
+        menu.classList.remove('open');
+        menu.setAttribute('aria-hidden', 'true');
+        if (userBtn) userBtn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    if (userBtn && menu) {
+      userBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const willOpen = !menu.classList.contains('open');
+        if (willOpen) {
+          menu.classList.add('open');
+          menu.setAttribute('aria-hidden', 'false');
+          userBtn.setAttribute('aria-expanded', 'true');
+        } else {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!menu.contains(e.target) && e.target !== userBtn) closeMenu();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeMenu();
+      });
+    }
+
+    if (notifyBtn) {
+      notifyBtn.addEventListener('click', function () {
+        alert('No new notifications');
+      });
+    }
+
+    // Update mobile menu auth item based on login state
+    if (menu) {
+      const authItem = menu.querySelector('a[href="login.html"]');
+      if (authItem) {
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        if (token && username) {
+          authItem.textContent = username;
+          authItem.href = 'shop.html';
+        } else {
+          authItem.textContent = 'login/sign';
+          authItem.href = 'login.html';
+        }
+      }
+    }
+  })();
+</script>
+    <section id="header">
+        <div class="logo-container">
+            <a href="index.html"><img src="img/logo1.png" class="logo" alt="RAW FADE"></a>
+        </div>
+        <nav>
+            <ul id="navbar">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="login.html" class="active">Login</a></li>
+                <li><a href="cart.html" aria-label="Cart"><i class="fas fa-shopping-cart" aria-hidden="true"></i></a></li>
+            </ul>
+        </nav>
+    </section>
+
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h2>Welcome to RAW FADE</h2>
+                <p>Sign in to your account or create a new one</p>
+            </div>
+
+            <div class="form-tabs">
+                <button type="button" class="tab-button active" data-tab="login">Login</button>
+                <button type="button" class="tab-button" data-tab="register">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="form-content active">
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginUsername">Username</label>
+                        <input type="text" id="loginUsername" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" name="password" required>
+                    </div>
+                    <button type="submit" class="submit-btn" id="loginBtn">Sign In</button>
+                    <div id="loginMessage" class="error-message"></div>
+                </form>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="form-content">
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerUsername">Username</label>
+                        <input type="text" id="registerUsername" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" name="password" required>
+                    </div>
+                    <button type="submit" class="submit-btn" id="registerBtn">Create Account</button>
+                    <div id="registerMessage" class="error-message"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080';
+
+        // Add event listeners when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up tab switching
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const tab = this.dataset.tab;
+                    // Update tab buttons
+                    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Update form content
+                    document.querySelectorAll('.form-content').forEach(content => content.classList.remove('active'));
+                    document.getElementById(tab + 'Form').classList.add('active');
+
+                    // Clear messages
+                    clearMessages();
+                });
+            });
+        });
+
+        function clearMessages() {
+            document.getElementById('loginMessage').textContent = '';
+            document.getElementById('registerMessage').textContent = '';
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const loginBtn = document.getElementById('loginBtn');
+            const messageEl = document.getElementById('loginMessage');
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Signing In...';
+            messageEl.textContent = '';
+
+            const formData = new FormData(event.target);
+            const loginData = {
+                email: formData.get('username'),
+                password: formData.get('password')
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                let data;
+                try {
+                    const ct = response.headers.get('content-type') || '';
+                    if (ct.includes('application/json')) {
+                        data = await response.json();
+                    } else {
+                        const text = await response.text();
+                        data = text ? { message: text } : {};
+                    }
+                } catch (error) {
+                    const text = await response.text().catch(() => '');
+                    data = text ? { message: text } : { message: 'Invalid response from server' };
+                }
+
+                if (response.ok && data.token) {
+                    // Store authentication data
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('email', data.email);
+                    if (data.name) {
+                        localStorage.setItem('username', data.name);
+                    } else {
+                        localStorage.removeItem('username');
+                    }
+                    
+                    messageEl.textContent = 'Login successful! Redirecting...';
+                    messageEl.className = 'success-message';
+                    
+                    // Check if there's a redirect URL (from cart attempt)
+                    const redirectUrl = localStorage.getItem('redirectAfterLogin') || 'shop.html';
+                    localStorage.removeItem('redirectAfterLogin');
+                    
+                    setTimeout(() => {
+                        window.location.href = redirectUrl;
+                    }, 1500);
+                } else {
+                    messageEl.textContent = data.message || 'Login failed. Please try again.';
+                    messageEl.className = 'error-message';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                messageEl.textContent = 'Network error. Please try again.';
+                messageEl.className = 'error-message';
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Sign In';
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            const registerBtn = document.getElementById('registerBtn');
+            const messageEl = document.getElementById('registerMessage');
+            
+            registerBtn.disabled = true;
+            registerBtn.textContent = 'Creating Account...';
+            messageEl.textContent = '';
+
+            const formData = new FormData(event.target);
+            const registerData = {
+                email: formData.get('email'),
+                password: formData.get('password'),
+                name: `${formData.get('firstName')} ${formData.get('lastName')}`.trim()
+            };
+
+            try {
+                console.log('Attempting to register with:', API_BASE_URL);
+                const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(registerData)
+                });
+
+                let data;
+                try {
+                    const ct = response.headers.get('content-type') || '';
+                    if (ct.includes('application/json')) {
+                        data = await response.json();
+                    } else {
+                        const text = await response.text();
+                        data = text ? { message: text } : {};
+                    }
+                } catch (error) {
+                    console.error('Error parsing response:', error);
+                    const text = await response.text().catch(() => '');
+                    data = text ? { message: text } : { message: 'Invalid response from server' };
+                }
+
+                if (response.ok) {
+                    messageEl.textContent = 'Account created successfully! Please login.';
+                    messageEl.className = 'success-message';
+                    
+                    // Switch to login tab after successful registration
+                    setTimeout(() => {
+                        document.querySelector('.tab-button[data-tab="login"]').click();
+                        document.getElementById('loginUsername').value = registerData.email;
+                    }, 2000);
+                } else {
+                    messageEl.textContent = data.message || 'Registration failed. Please try again.';
+                    messageEl.className = 'error-message';
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                messageEl.textContent = 'Network error. Please try again.';
+                messageEl.className = 'error-message';
+            } finally {
+                registerBtn.disabled = false;
+                registerBtn.textContent = 'Create Account';
+            }
+        }
+
+        // Removed auto-redirect-on-load block
+    </script>
+</body>
+</html>

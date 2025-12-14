@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <link rel="stylesheet" href="style.css">
+        <script defer src="script.js"></script>
+
+        <title>Cara - Contact</title>
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+            html { overflow-x: hidden; }
+            
+            /* Colors */
+            :root {
+                --bg: #111;
+                --panel: #181818;
+                --text: #fff;
+                --muted: #bbb;
+                --accent: #fff;
+                --border: #333;
+            }
+            
+            body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+            
+            /* Header */
+            #header { 
+                background: var(--panel); 
+                border-bottom: 1px solid rgba(255,255,255,0.1); 
+                position: sticky; 
+                top: 0; 
+                z-index: 999; 
+                padding: 0 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 80px;
+                overflow: hidden;
+            }
+            
+            .logo-container {
+                position: absolute;
+                left: 32px;
+                display: flex;
+                align-items: center;
+                padding: 0;
+                height: 100%;
+                overflow: hidden;
+            }
+            
+            .logo-container img {
+                height: 100%;
+                width: auto;
+                max-height: 150px;
+                display: block;
+                margin: 0;
+                padding: 0;
+                transform: none;
+            }
+            
+            #header nav {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+            }
+
+            /* NAVIGATION BAR: Make compact and horizontally scrollable on mobile */
+            #navbar {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin: 0;
+                padding: 0;
+            }
+            @media (max-width: 600px) {
+                html, body { width: 100%; overflow-x: hidden; }
+                #header { padding: 8px 4px; display: flex; align-items: center; justify-content: center; width: 100%; }
+                .logo-container { 
+                    position: absolute;
+                    left: 5px;
+                    margin-bottom: 0; 
+                    text-align: left; 
+                }
+                .logo-container img { max-height: 42px; display: block; }
+                nav { flex: 1 1 auto; overflow: hidden; display: flex; justify-content: center; }
+                #navbar { gap: 2px; flex-wrap: nowrap; justify-content: center; overflow-x: auto; -ms-overflow-style: none; scrollbar-width: none; }
+                #navbar::-webkit-scrollbar { display: none; }
+                #navbar li { margin: 0; }
+                #navbar li a { font-size: 13px; padding: 8px 12px; white-space: nowrap; display: inline-block; text-align: center; min-width: 60px; }
+            }
+
+            #navbar li { 
+                list-style: none; 
+                position: relative; 
+            }
+
+            #navbar li a { 
+                text-decoration: none; 
+                font-size: 15px; 
+                font-weight: 600; 
+                color: var(--text); 
+                transition: .2s ease; 
+                padding: 8px 16px;
+                border-radius: 20px;
+                display: block;
+                position: relative;
+            }
+
+            #navbar li a:hover, 
+            #navbar li a.active { 
+                color: var(--accent); 
+                background: rgba(255,255,255,0.2);
+            }
+
+            #navbar li a:hover::after, 
+            #navbar li a.active::after { 
+                content: ""; 
+                width: 60%; 
+                height: 2px; 
+                background: var(--accent); 
+                position: absolute; 
+                bottom: 2px; 
+                left: 20%; 
+            }
+
+            #navbar li a i.fa-shopping-cart{
+                font-size: 16px;
+                margin: 0;
+                padding: 0;
+            }
+            #navbar li a[href="cart.html"] {
+                padding: 4px 4px !important;
+                min-width: 28px !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            /* Correcting malformed CSS rules */
+            @keyframes rotateScale {
+                0% {
+                    transform: rotate(0deg) scale(0.8);
+                    opacity: 0.3;
+                }
+                50% {
+                    transform: rotate(180deg) scale(1.2);
+                    opacity: 0.5;
+                }
+                100% {
+                    transform: rotate(360deg) scale(0.8);
+                    opacity: 0.3;
+                }
+            }
+            
+            /* Page Header */
+            #page-header {
+                background: var(--panel);
+                padding: 60px 20px;
+                text-align: center;
+                margin-bottom: 40px;
+            }
+            
+            /* Contact Details */
+            #contact-details {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                padding: 40px 20px;
+                background: var(--bg);
+                margin-bottom: 40px;
+            }
+            
+            /* Form Details */
+            #form-details {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                padding: 40px 20px;
+                background: var(--bg);
+                margin-bottom: 40px;
+            }
+            
+            /* Newsletter */
+            #newsletter {
+                background: var(--panel);
+                color: var(--text);
+                padding: 40px 20px;
+                margin: 40px 0;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            /* Footer */
+            footer {
+                background: var(--panel);
+                color: var(--text);
+                padding: 40px 20px;
+                margin-top: 40px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <section id="header">
+            <div class="logo-container">
+                <a href="index.html"><img src="img/logo1.png" class="logo" alt="RAW FADE"></a>
+            </div>
+            <ul id="navbar">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+                <li><a href="cart.html"><i class="fas fa-shopping-bag"></i></a></li>
+                <li><a href="login.html" id="authLink">Login</a></li>
+            </ul>
+        </section>
+
+        <section id="page-header" class="contact-header" style="background: var(--panel); padding: 60px 20px; text-align: center; margin-bottom: 40px;">
+            <h2 style="font-size: 36px; color: var(--text); margin-bottom: 15px;">Let's Talk</h2>
+            <p style="font-size: 18px; color: var(--muted);">LEAVE A MESSAGE, We love to hear from you!</p>
+        </section>
+        
+        <section id="contact-details" class="section-p1" style="display: flex; flex-wrap: wrap; justify-content: space-between; padding: 40px 20px; background: var(--bg); margin-bottom: 40px;">
+            <div class="details" style="flex: 1; min-width: 300px; margin-bottom: 30px;">
+                <span style="font-size: 14px; font-weight: 600; color: var(--accent);">GET IN TOUCH</span>
+                <h2 style="font-size: 28px; margin: 15px 0; color: var(--text);">Visit one of our agency locations or contact us today.</h2>
+                <h3 style="font-size: 20px; margin-bottom: 20px; color: var(--text);">Head Office</h3>
+                <div style="margin-top: 20px;">
+                    <li style="display: flex; align-items: flex-start; margin-bottom: 20px; list-style: none;">
+                        <i class="fa-solid fa-location-dot" style="color: var(--accent); font-size: 18px; margin-right: 15px; margin-top: 5px;"></i>
+                        <p style="color: var(--muted); line-height: 1.5;">Proddatur City in Andhra Pradesh, India</p>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; margin-bottom: 20px; list-style: none;">
+                        <i class="fa-regular fa-envelope" style="color: var(--accent); font-size: 18px; margin-right: 15px; margin-top: 5px;"></i>
+                        <p style="color: var(--muted); line-height: 1.5;">contact@example.com</p>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; margin-bottom: 20px; list-style: none;">
+                        <i class="fa-solid fa-phone" style="color: var(--accent); font-size: 18px; margin-right: 15px; margin-top: 5px;"></i>
+                        <p style="color: var(--muted); line-height: 1.5;">+91 7777911229</p>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; margin-bottom: 20px; list-style: none;">
+                        <i class="fa-solid fa-clock" style="color: var(--accent); font-size: 18px; margin-right: 15px; margin-top: 5px;"></i>
+                        <p style="color: var(--muted); line-height: 1.5;">Monday to Saturday: 9:00 A.M. to 5:00 P.M.</p>
+                    </li>
+                </div>
+            </div>
+            <div class="map" style="flex: 1; min-width: 300px; height: 450px; border-radius: 8px; overflow: hidden;">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.7763248331876!2d-74.01773612427314!3d40.70092357139524!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a128d64db9b%3A0xacfba1747b40b4d4!2sStatue%20of%20Liberty%20Vista%20Point!5e0!3m2!1sen!2sin!4v1698861785387!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </section>
+
+        <section id="form-details" class="section-p1" style="display: flex; flex-wrap: wrap; justify-content: space-between; padding: 40px 20px; background: var(--bg); margin-bottom: 40px;">
+            <form id="contactForm" style="flex: 1; min-width: 300px; margin-right: 30px; margin-bottom: 30px;">
+                <span style="font-size: 14px; font-weight: 600; color: var(--accent);">LEAVE A MESSAGE</span>
+                <h2 style="font-size: 28px; margin: 15px 0 25px; color: var(--text);">We love to hear from you</h2>
+                <input type="text" placeholder="Your name" name="name" required style="width: 100%; padding: 12px 15px; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 5px; background: var(--panel); color: var(--text);">
+                <input type="email" placeholder="Your email" name="email" required style="width: 100%; padding: 12px 15px; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 5px; background: var(--panel); color: var(--text);">
+                <input type="text" placeholder="Your subject" name="subject" required style="width: 100%; padding: 12px 15px; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 5px; background: var(--panel); color: var(--text);">
+                <textarea name="message" id="" cols="30" rows="10" placeholder="Your message" required style="width: 100%; padding: 12px 15px; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 5px; background: var(--panel); color: var(--text); resize: none;"></textarea>
+                <button type="submit" class="normal" style="padding: 12px 25px; background: var(--accent); color: var(--bg); border: none; border-radius: 5px; font-weight: 600; cursor: pointer; transition: 0.3s ease;">Submit</button>
+            </form>
+            <div class="people" style="flex: 1; min-width: 300px;">
+                <div style="display: flex; align-items: flex-start; margin-bottom: 30px;">
+                    <img src="img/people/1.png" alt="John Doe" style="width: 65px; height: 65px; object-fit: cover; margin-right: 20px; border-radius: 50%;">
+                    <p style="color: var(--muted); line-height: 1.6;"><span style="display: block; font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 5px;">John Doe</span>Senior Marketing Manager <br> Phone: +1 000-123-4567 <br> Email: contact@example.com</p>
+                </div>
+                <div style="display: flex; align-items: flex-start; margin-bottom: 30px;">
+                    <img src="img/people/2.png" alt="Alex Smith" style="width: 65px; height: 65px; object-fit: cover; margin-right: 20px; border-radius: 50%;">
+                    <p style="color: var(--muted); line-height: 1.6;"><span style="display: block; font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 5px;">Alex Smith</span>Senior Marketing Manager <br> Phone: +1 000-123-4567 <br> Email: contact@example.com</p>
+                </div>
+                <div style="display: flex; align-items: flex-start; margin-bottom: 30px;">
+                    <img src="img/people/3.png" alt="Anica Nikolić" style="width: 65px; height: 65px; object-fit: cover; margin-right: 20px; border-radius: 50%;">
+                    <p style="color: var(--muted); line-height: 1.6;"><span style="display: block; font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 5px;">Anica Nikolić</span>Senior Marketing Manager <br> Phone: +1 000-123-4567 <br> Email: contact@example.com</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="newsletter" class="section-p1 section-m1" style="background: var(--panel); color: var(--text); padding: 40px 20px; margin: 40px 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+            <div class="newstext" style="flex: 1; min-width: 300px;">
+                <h4 style="color: var(--text); font-size: 24px; margin-bottom: 10px;">Sign Up For Newsletters</h4>
+                <p style="color: var(--muted); font-size: 16px;">Get E-mail updates about our latest shop and <span style="color: var(--accent);">special offers.</span></p>
+            </div>
+            <div class="form" style="flex: 1; min-width: 300px; display: flex; margin-top: 20px;">
+                <input type="text" placeholder="Your email address" id="signUp" style="width: 100%; padding: 12px 15px; border-radius: 5px 0 0 5px; border: 1px solid var(--border); background: var(--bg); color: var(--text);">
+                <button class="normal" style="padding: 12px 20px; border-radius: 0 5px 5px 0; border: none; background: var(--accent); color: var(--bg); font-weight: 600; cursor: pointer; transition: 0.3s ease;">Sign Up</button>
+            </div>
+        </section>
+
+        <footer class="section-p1" style="background: var(--panel); color: var(--text); padding: 40px 20px; margin-top: 40px;">
+            <div class="col">
+                <div class="footer-logo-container">
+                    <img class="logo" src="img/logo1.png" alt="RAW FADE" style="max-width: 150px;">
+                    
+                </div>
+                <h4 style="color: var(--text); margin-bottom: 10px;">Contact</h4>
+                <p style="color: var(--muted); margin-bottom: 8px;"><strong>Address:</strong> Proddatur City in Andhra Pradesh, India</p>
+                <p style="color: var(--muted); margin-bottom: 8px;"><strong>Phone:</strong> +91 7777911229</p> 
+                <p style="color: var(--muted); margin-bottom: 8px;"><strong>Hours:</strong> 10:00 - 18:00 Mon - Fri</p> 
+                <div class="follow">
+                    <h4 style="color: var(--text); margin: 15px 0 10px 0;">Follow us</h4>
+                    <div class="icon" style="display: flex; gap: 15px;">
+                        <i class="fa-brands fa-x-twitter" style="color: var(--muted);"></i>
+                        <i class="fa-brands fa-facebook" style="color: var(--muted);"></i>
+                        <i class="fa-brands fa-pinterest" style="color: var(--muted);"></i>
+                        <i class="fa-brands fa-whatsapp" style="color: var(--muted);"></i>
+                        <i class="fa-brands fa-instagram" style="color: var(--muted);"></i>
+                        <i class="fa-brands fa-youtube" style="color: var(--muted);"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <h4 style="color: var(--text); margin-bottom: 15px;">About</h4>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">About Us</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">Delivery Information</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">Privacy Policy</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">Terms & Conditions</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">Contact Us</a>
+            </div>
+
+            <div class="col">
+                <h4 style="color: var(--text); margin-bottom: 15px;">My Account</h4>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">Sign In</a>
+                <a href="cart.html" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">View Cart</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">My Wishlist</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">Track My Order</a>
+                <a href="#" style="display: block; color: var(--muted); text-decoration: none; margin-bottom: 10px;">Help</a>
+            </div>
+
+            <div class="col install">
+                <h4 style="color: var(--text); margin-bottom: 15px;">Install App</h4>
+                <p style="color: var(--muted); margin-bottom: 10px;">From App Store or Google Play</p>
+                <img class="row" src="img/pay/app.jpg" alt="App Store" style="margin-bottom: 10px;">
+                <img class="row" src="img/pay/play.jpg" alt="Google Play" style="margin-bottom: 10px;">
+                <p style="color: var(--muted); margin-bottom: 10px;">Secured Payment Gateways</p>
+                <img src="img/pay/pay.png" alt="Payment Methods">
+            </div>
+
+            <div class="copyright" style="text-align: center; margin-top: 20px; color: var(--muted);">
+                <p> 2023, Rajsinh Chauhan - Ecommerce Template</p>
+            </div>
+        </footer>
+
+        <script>
+            // Initialize page
+            document.addEventListener('DOMContentLoaded', function() {
+                setupContactForm();
+                updateAuthStatus();
+            });
+
+            function updateAuthStatus() {
+                const token = localStorage.getItem('token');
+                const username = localStorage.getItem('username');
+                const authLink = document.getElementById('authLink');
+                
+                if (token && username) {
+                    authLink.textContent = `Welcome, ${username}`;
+                    authLink.href = '#';
+                    authLink.onclick = function(e) {
+                        e.preventDefault();
+                        logout();
+                    };
+                } else {
+                    authLink.textContent = 'Login';
+                    authLink.href = 'login.html';
+                    authLink.onclick = null;
+                }
+            }
+
+            function logout() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('username');
+                localStorage.removeItem('email');
+                alert('Logged out successfully');
+                window.location.href = 'index.html';
+            }
+
+            function setupContactForm() {
+                const contactForm = document.getElementById('contactForm');
+                
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(contactForm);
+                    const contactData = {
+                        name: formData.get('name'),
+                        email: formData.get('email'),
+                        subject: formData.get('subject'),
+                        message: formData.get('message')
+                    };
+                    
+                    // Here you can add backend integration for contact form
+                    // For now, we'll just show a success message
+                    alert('Thank you for your message! We will get back to you soon.');
+                    contactForm.reset();
+                });
+            }
+
+            // Newsletter signup functionality
+            document.querySelector('#newsletter .form button').addEventListener('click', function() {
+                const email = document.getElementById('signUp').value;
+                if (email) {
+                    alert('Thank you for subscribing to our newsletter!');
+                    document.getElementById('signUp').value = '';
+                } else {
+                    alert('Please enter your email address');
+                }
+            });
+        </script>
+    </body>
+
+</html>

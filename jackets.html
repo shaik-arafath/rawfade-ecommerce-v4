@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Jackets - RAW FADE</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<style>
+		* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+		html { overflow-x: hidden; }
+		:root {
+			--bg: #000000;
+			--panel: #111111;
+			--text: #ffffff;
+			--muted: #cccccc;
+			--accent: #ffffff;
+			--border: #333333;
+		}
+		body { background: #000000; color: #ffffff; overflow-x: hidden; }
+
+		/* Enhanced Header */
+		#header { 
+			background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.95), rgba(9, 9, 11, 0.95));
+			backdrop-filter: blur(15px);
+			-webkit-backdrop-filter: blur(15px);
+			border-bottom: 2px solid rgba(66, 65, 65, 0.2); 
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+			position: sticky; 
+			top: 0; 
+			z-index: 999; 
+			padding: 0 32px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 80px;
+			overflow: hidden;
+			animation: headerGlow 4s ease-in-out infinite alternate;
+		}
+
+		@keyframes headerGlow {
+			0% {
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 30px rgba(135, 206, 235, 0.1);
+			}
+			100% {
+				box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4), 0 0 40px rgba(135, 206, 235, 0.2);
+			}
+		}
+
+		.logo-container {
+			flex: 0 0 auto;
+			margin-right: 15px;
+			display: flex;
+			align-items: center;
+			padding: 0;
+			height: 100%;
+			overflow: hidden;
+			animation: logoFloat 3s ease-in-out infinite;
+		}
+
+		@keyframes logoFloat {
+			0%, 100% { transform: translateY(0px); }
+			50% { transform: translateY(-2px); }
+		}
+
+		.logo-container img {
+			height: 100%;
+			width: auto;
+			max-height: 150px;
+			display: block;
+			margin: 0;
+			padding: 0;
+			transform: none;
+			filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.3));
+			transition: all 0.3s ease;
+		}
+
+		.logo-container img:hover {
+			filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.5));
+			transform: scale(1.05);
+		}
+
+		#header nav {
+			flex: 1;
+			display: flex;
+			justify-content: center;
+		}
+
+		#navbar { 
+			display: flex; 
+			align-items: center; 
+			justify-content: center; 
+			flex-wrap: wrap; 
+			gap: 12px; 
+			margin: 0; 
+			padding: 0;
+			animation: navSlideIn 1s ease-out;
+		}
+
+		@keyframes navSlideIn {
+			0% {
+				opacity: 0;
+				transform: translateY(-20px);
+			}
+			100% {
+				opacity: 1;
+				transform: translateY(0px);
+			}
+		}
+
+		#navbar li { 
+			list-style: none; 
+			position: relative;
+			animation: navItemFadeIn 0.8s ease-out forwards;
+			opacity: 0;
+		}
+
+		#navbar li:nth-child(1) { animation-delay: 0.1s; }
+		#navbar li:nth-child(2) { animation-delay: 0.2s; }
+		#navbar li:nth-child(3) { animation-delay: 0.3s; }
+		#navbar li:nth-child(4) { animation-delay: 0.4s; }
+		#navbar li:nth-child(5) { animation-delay: 0.5s; }
+		#navbar li:nth-child(6) { animation-delay: 0.6s; }
+
+		@keyframes navItemFadeIn {
+			0% {
+				opacity: 0;
+				transform: translateY(-10px);
+			}
+			100% {
+				opacity: 1;
+				transform: translateY(0px);
+			}
+		}
+
+		#navbar li a { 
+			text-decoration: none; 
+			font-size: 15px; 
+			font-weight: 600; 
+			color: #ffffff;
+			text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+			padding: 10px 18px; 
+			border-radius: 25px; 
+			display: block;
+			background: rgba(255, 255, 255, 0.1);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			backdrop-filter: blur(10px);
+			position: relative;
+			overflow: hidden;
+		}
+
+		#navbar li a::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+			transition: left 0.5s ease;
+		}
+
+		#navbar li a:hover::before {
+			left: 100%;
+		}
+
+		#navbar li a:hover, #navbar li a.active { 
+			color: #ebe4e4;
+			background: linear-gradient(135deg, rgba(37, 37, 37, 0.358), rgba(255, 255, 255, 0.2));
+			border: 1px solid rgba(79, 82, 83, 0.5);
+			box-shadow: 0 4px 15px rgba(58, 58, 58, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+			transform: translateY(-2px) scale(1.05);
+			text-shadow: 0 1px 5px rgba(62, 61, 61, 0.033);
+		}
+
+		#navbar li a.active {
+			background: linear-gradient(135deg, rgba(67, 67, 67, 0.564), rgba(255, 255, 255, 0.3));
+			animation: activeGlow 2s ease-in-out infinite alternate;
+		}
+
+		@keyframes activeGlow {
+			0% {
+				box-shadow: 0 4px 15px rgba(72, 73, 73, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+			}
+			100% {
+				box-shadow: 0 6px 20px rgba(61, 62, 62, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+			}
+		}
+		
+		/* Mobile Responsive Navbar */
+		@media (max-width: 768px) {
+			#header {
+				padding: 0 16px;
+				height: 60px;
+			}
+			
+			.logo-container {
+				margin-right: 10px;
+			}
+			
+			.logo-container img {
+				max-height: 50px;
+			}
+			
+			#navbar { 
+				gap: 4px; 
+				flex-wrap: nowrap; 
+				justify-content: flex-end; 
+				overflow-x: auto; 
+				-ms-overflow-style: none; 
+				scrollbar-width: none; 
+				width: 100%;
+				padding: 0 5px;
+			}
+			
+			#navbar::-webkit-scrollbar { 
+				display: none; 
+			}
+			
+			#navbar li { 
+				margin: 0; 
+				padding: 0;
+				flex-shrink: 0;
+			}
+			
+			#navbar li a { 
+				padding: 6px 12px; 
+				font-size: 12px; 
+				min-width: auto;
+				white-space: nowrap; 
+				display: inline-block;
+				border-radius: 15px;
+			}
+		}
+		
+		@media (max-width: 480px) {
+			#header {
+				padding: 0 12px;
+				height: 55px;
+			}
+			
+			.logo-container img {
+				max-height: 45px;
+			}
+			
+			#navbar li a { 
+				padding: 5px 10px; 
+				font-size: 11px;
+			}
+		}
+
+		/* Page Header */
+		.page-header { 
+			padding: 40px 24px; 
+			text-align: center; 
+			background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #041325 60%, #1a1a2e 100%);
+			border-bottom: 1px solid rgba(255,255,255,0.1);
+		}
+		.page-header h1 { 
+			font-size: 2.5rem; 
+			margin: 0; 
+			color: #f1ecec;
+			text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+		}
+
+		/* Product Grid */
+		.product-grid { 
+			display: flex; 
+			flex-wrap: wrap; 
+			gap: 32px; 
+			justify-content: center; 
+			padding: 40px 20px; 
+			max-width: 1200px; 
+			margin: 0 auto;
+		}
+
+		.product-card { 
+			background: var(--panel); 
+			border: 2px solid var(--border); 
+			border-radius: 12px; 
+			width: 280px; 
+			text-align: center; 
+			padding: 24px 16px; 
+			transition: transform 0.3s ease, border-color 0.3s ease;
+		}
+		.product-card:hover {
+			transform: translateY(-5px);
+			border-color: var(--accent);
+		}
+		.product-card img { 
+			width: 100%; 
+			height: 220px; 
+			object-fit: cover; 
+			border-radius: 8px; 
+			background: #222; 
+		}
+		.product-card h3 { 
+			margin: 18px 0 8px 0; 
+			font-size: 1.2rem; 
+			color: var(--text); 
+		}
+		.product-card p { 
+			color: var(--muted); 
+			margin: 0 0 16px 0; 
+			font-size: 1.1rem;
+			font-weight: 600;
+		}
+		.add-to-cart {
+			background: var(--accent);
+			color: var(--bg);
+			border: none;
+			padding: 10px 20px;
+			border-radius: 6px;
+			cursor: pointer;
+			font-weight: 600;
+			transition: all 0.3s ease;
+		}
+		.add-to-cart:hover {
+			background: rgba(255,255,255,0.9);
+			transform: translateY(-2px);
+		}
+		.back-btn {
+			position: fixed;
+			top: 20px;
+			left: 20px;
+			background: var(--panel);
+			color: var(--text);
+			border: 2px solid var(--border);
+			padding: 10px 15px;
+			border-radius: 8px;
+			text-decoration: none;
+			font-weight: 600;
+			transition: all 0.3s ease;
+		}
+		.back-btn:hover {
+			border-color: var(--accent);
+			color: var(--accent);
+		}
+		
+		/* Price styling - white for offer price, strikethrough for original */
+		.product-card .product-price {
+			font-size: 20px;
+			font-weight: 700;
+			color: #ffffff;
+			text-align: center;
+		}
+		
+		.discount-price {
+			color: #ffffff;
+			font-size: 16px;
+			font-weight: 700;
+			text-align: center;
+		}
+		
+		.product-card .original-price {
+			color: #999999;
+			font-size: 14px;
+			text-decoration: line-through;
+			font-weight: 400;
+		}
+		
+		.price-container {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 8px;
+			margin-top: 5px;
+			justify-content: center;
+		}
+		
+		/* Remove underlines from product links */
+		.product-card a,
+		.product-info a,
+		.product-card a:hover,
+		.product-info a:hover,
+		.product-card a:visited,
+		.product-info a:visited {
+			text-decoration: none !important;
+			color: inherit !important;
+		}
+		
+		.product-card .product-name a,
+		.product-card .product-price a,
+		.product-card .discount-price a,
+		.product-card .original-price a {
+			text-decoration: none !important;
+			color: inherit !important;
+		}
+		
+		/* Mobile responsive layout - match index.html */
+		@media (max-width: 799px) {
+			body {
+				overflow-x: hidden;
+				width: 100vw;
+			}
+			
+			.container {
+				max-width: 100vw;
+				padding: 0 8px;
+				box-sizing: border-box;
+			}
+			
+			.product-grid {
+				display: grid !important;
+				grid-template-columns: repeat(2, 1fr) !important;
+				gap: 8px !important;
+				padding: 0 8px;
+				max-width: 100%;
+				box-sizing: border-box;
+			}
+			
+			.product-card {
+				width: 100% !important;
+				padding: 12px 6px !important;
+				box-sizing: border-box;
+				min-width: 0;
+			}
+			
+			.product-card img {
+				height: 180px !important;
+				width: 100%;
+				object-fit: cover;
+			}
+			
+			.product-card h3 {
+				font-size: 0.95rem !important;
+				margin: 8px 0 4px 0 !important;
+				word-wrap: break-word;
+			}
+			
+			.product-card p {
+				font-size: 0.85rem !important;
+				margin: 0 0 8px 0 !important;
+				word-wrap: break-word;
+			}
+			
+			.add-to-cart {
+				padding: 6px 12px !important;
+				font-size: 0.8rem !important;
+				width: 100%;
+				box-sizing: border-box;
+			}
+		}
+		
+		@media (max-width: 480px) {
+			.product-grid {
+				gap: 6px !important;
+				padding: 0 4px;
+			}
+			
+			.product-card {
+				padding: 8px 4px !important;
+			}
+			
+			.product-card img {
+				height: 150px !important;
+			}
+			
+			.product-card h3 {
+				font-size: 0.85rem !important;
+				margin: 6px 0 3px 0 !important;
+			}
+			
+			.product-card p {
+				font-size: 0.75rem !important;
+				margin: 0 0 6px 0 !important;
+			}
+			
+			.add-to-cart {
+				padding: 5px 8px !important;
+				font-size: 0.75rem !important;
+			}
+		}
+	</style>
+</head>
+<body>
+<!-- MOBILE HEADER (only visible on screens <= 768px) -->
+<style>
+  /* Base: hidden by default (desktop) */
+  #rf-mobile-header { display: none; }
+
+  /* Show mobile header, hide desktop header/nav on mobile */
+  @media (max-width: 768px) {
+    /* Hide your existing desktop header on mobile only */
+    #header { display: none !important; }
+
+    /* Mobile header container */
+    #rf-mobile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
+      background: #000;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    /* Left section: logo + brand */
+    .rf-mh-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .rf-mh-logo { height: 40px; width: auto; display: block; }
+    .rf-mh-brand { height: 34px; width: auto; display: block; }
+
+    /* Right section: icons */
+    .rf-mh-right { display: flex; align-items: center; gap: 8px; }
+    .rf-icon-btn { background: #ffffff; border: 1px solid rgba(255,255,255,0.25); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; transition: background 0.2s ease; }
+    .rf-icon-btn:hover { background: #f0f0f0; }
+    .rf-icon-img { height: 20px; width: 20px; object-fit: contain; pointer-events: none; display: block; }
+
+    /* Dropdown menu (slide-down) */
+    .rf-user-wrap { position: relative; }
+    .rf-user-menu {
+      position: fixed; right: 8px; top: 56px; bottom: 8px; width: 200px; background: #000;
+      border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; overflow: hidden;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+      opacity: 0; transform: translateY(-6px);
+      transition: opacity 180ms ease, transform 220ms ease;
+      overflow-y: auto;
+    }
+    .rf-user-menu.open { opacity: 1; transform: translateY(0); }
+    .rf-user-menu a { display: block; padding: 10px 12px; color: #fff; text-decoration: none; font-size: 14px; }
+    .rf-user-menu a:hover { background: #111; }
+  }
+</style>
+<!-- MOBILE HEADER (only visible on screens <= 768px) -->
+<div id="rf-mobile-header" role="banner">
+  <div class="rf-mh-left">
+    <img class="rf-mh-logo" src="img/prince.png" alt="RAW FADE logo">
+    <a href="index.html"><img class="rf-mh-brand" src="img/RAW%20FADE%20Logo%20Design1.png" alt="RAW FADE brand"></a>
+  </div>
+  <div class="rf-mh-right">
+    <button class="rf-icon-btn" id="rfNotifyBtn" title="Notifications" aria-label="Notifications">
+      <img class="rf-icon-img" src="img/pngwing.com (17).png" alt="">
+    </button>
+    <div class="rf-user-wrap">
+      <button class="rf-icon-btn" id="rfUserBtn" aria-haspopup="true" aria-expanded="false" aria-controls="rfUserMenu" title="Account" aria-label="Account">
+        <img class="rf-icon-img" src="img/pngwing.com (15).png" alt="">
+      </button>
+      <nav id="rfUserMenu" class="rf-user-menu" role="menu" aria-hidden="true">
+        <a role="menuitem" href="login.html">login/sign</a>
+        <a role="menuitem" href="shop.html">shop</a>
+        <a role="menuitem" href="shirts.html">shirts</a>
+        <a role="menuitem" href="tshirts.html">tshirts</a>
+        <a role="menuitem" href="jeans.html">jeans</a>
+        <a role="menuitem" href="shorts.html">shorts</a>
+        <a role="menuitem" href="jackets.html">jackets</a>
+        <a role="menuitem" href="cart.html">cart</a>
+        <a role="menuitem" href="#" id="rfLogoutLink">logout</a>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const userBtn = document.getElementById('rfUserBtn');
+    const menu = document.getElementById('rfUserMenu');
+    const notifyBtn = document.getElementById('rfNotifyBtn');
+
+    function closeMenu() {
+      if (menu) {
+        menu.classList.remove('open');
+        menu.setAttribute('aria-hidden', 'true');
+        if (userBtn) userBtn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    if (userBtn && menu) {
+      userBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const willOpen = !menu.classList.contains('open');
+        if (willOpen) {
+          menu.classList.add('open');
+          menu.setAttribute('aria-hidden', 'false');
+          userBtn.setAttribute('aria-expanded', 'true');
+        } else {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!menu.contains(e.target) && e.target !== userBtn) closeMenu();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeMenu();
+      });
+    }
+
+    if (notifyBtn) {
+      notifyBtn.addEventListener('click', function () {
+        alert('No new notifications');
+      });
+    }
+
+    // Update mobile menu auth item based on login state
+    if (menu) {
+      const authItem = menu.querySelector('a[href="login.html"]');
+      const logoutLink = menu.querySelector('#rfLogoutLink');
+      const token = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+
+      if (authItem) {
+        if (token && username) {
+          authItem.textContent = username;
+          authItem.href = 'shop.html';
+        } else {
+          authItem.textContent = 'login/sign';
+          authItem.href = 'login.html';
+        }
+      }
+
+      if (logoutLink) {
+        if (token && username) {
+          logoutLink.style.display = 'block';
+        } else {
+          logoutLink.style.display = 'none';
+        }
+        logoutLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          localStorage.removeItem('token');
+          localStorage.removeItem('username');
+          localStorage.removeItem('email');
+          closeMenu();
+          window.location.href = 'index.html';
+        });
+      }
+    }
+  })();
+</script>
+	<header id="header">
+		<div class="logo-container">
+			<a href="index.html"><img src="img/logo1.png" alt="RAW FADE Logo"></a>
+		</div>
+		<nav>
+			<ul id="navbar">
+				<li><a href="shirts.html">SHIRTS</a></li>
+				<li><a href="tshirts.html">T-SHIRTS</a></li>
+				<li><a href="jeans.html">JEANS</a></li>
+				<li><a href="shorts.html" >SHORTS</a></li>
+				<li><a href="jackets.html">JACKETS</a></li>
+			</ul>
+		</nav>
+	</header>
+	<div class="page-header">
+		<h1>JACKETS</h1>
+	</div>
+	<div class="container">
+		<div class="product-grid">
+			<div class="product-card">
+				<img src="img/products/c3-2.png" alt="Leather Jacket">
+				<h3>Leather Jacket</h3>
+				<p>₹ 4,999</p>
+				<button class="add-to-cart" onclick="addToCart(33)">Add to Cart</button>
+			</div>
+			<div class="product-card">
+				<img src="img/products/c4-5.jpg" alt="Denim Jacket">
+				<h3>Denim Jacket</h3>
+				<p>₹ 2,999</p>
+				<button class="add-to-cart" onclick="addToCart(34)">Add to Cart</button>
+			</div>
+			<div class="product-card">
+				<img src="img/products/c5-3.jpg" alt="Bomber Jacket">
+				<h3>Bomber Jacket</h3>
+				<p>₹ 3,499</p>
+				<button class="add-to-cart" onclick="addToCart(35)">Add to Cart</button>
+			</div>
+			<div class="product-card">
+				<img src="img/products/c6-3.jpg" alt="Winter Jacket">
+				<h3>Winter Jacket</h3>
+				<p>₹ 5,499</p>
+				<button class="add-to-cart" onclick="addToCart(36)">Add to Cart</button>
+			</div>
+			<div class="product-card">
+				<img src="img/products/c7-2.png" alt="Windbreaker">
+				<h3>Windbreaker</h3>
+				<p>₹ 2,799</p>
+				<button class="add-to-cart" onclick="addToCart(37)">Add to Cart</button>
+			</div>
+			<div class="product-card">
+				<img src="img/products/c7-3.jpg" alt="Hooded Jacket">
+				<h3>Hooded Jacket</h3>
+				<p>₹ 3,299</p>
+				<button class="add-to-cart" onclick="addToCart(38)">Add to Cart</button>
+			</div>
+			<div class="product-card">
+				<img src="img/products/d4-6.jpg" alt="Sports Jacket">
+				<h3>Sports Jacket</h3>
+				<p>₹ 3,799</p>
+				<button class="add-to-cart" onclick="addToCart(39)">Add to Cart</button>
+			</div>
+			<div class="product-card">
+				<img src="img/products/d5-3.jpg" alt="Premium Jacket">
+				<h3>Premium Jacket</h3>
+				<p>₹ 6,999</p>
+				<button class="add-to-cart" onclick="addToCart(40)">Add to Cart</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="products-render.js?v=2"></script>
+	<script>
+		async function addToCartAPI(productId, quantity, username, token) {
+			const API_BASE_URL = '/api';
+			const response = await fetch(`${API_BASE_URL}/cart/user/${username}/add?productId=${productId}&quantity=${quantity}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${token}`
+				}
+			});
+			return response;
+		}
+
+		function addToCart(productId) {
+			const token = localStorage.getItem('token');
+			const username = localStorage.getItem('username');
+			
+			if (!token || !username) {
+				alert('Please login to add items to cart');
+				return;
+			}
+			
+			// Save cart data for admin panel tracking
+			const cartKey = `cart_${username}`;
+			let userCart = JSON.parse(localStorage.getItem(cartKey)) || { items: [], timestamp: new Date().toISOString() };
+			
+			// Check if item already exists in cart
+			const existingItem = userCart.items.find(item => item.productId == productId);
+			if (existingItem) {
+				existingItem.quantity = (existingItem.quantity || 1) + 1;
+			} else {
+				userCart.items.push({
+					productId: productId,
+					quantity: 1,
+					addedAt: new Date().toISOString()
+				});
+			}
+			
+			userCart.timestamp = new Date().toISOString();
+			localStorage.setItem(cartKey, JSON.stringify(userCart));
+			
+			// Try API call but don't fail if unavailable
+			(async () => {
+				try {
+					const response = await addToCartAPI(productId, 1, username, token);
+					if (response.ok) {
+						alert('Product added to cart successfully!');
+					} else {
+						console.log('API unavailable, cart saved locally');
+						alert('Product added to cart successfully! (Saved locally)');
+					}
+				} catch (err) {
+					console.log('API unavailable, cart saved locally:', err);
+					alert('Product added to cart successfully! (Saved locally)');
+				}
+			})();
+		}
+
+		document.addEventListener('DOMContentLoaded', () => {
+			const grid = document.querySelector('.product-grid');
+			if (grid) grid.innerHTML = '';
+			if (window.ProductsRender) {
+				window.ProductsRender.renderInto('.product-grid', { productType: 'jackets' });
+			}
+		});
+	</script>
+</body>
+</html>

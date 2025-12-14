@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Upload Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .btn { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; margin: 10px 0; }
+        .btn:hover { background: #0056b3; }
+        input[type="text"] { width: 300px; padding: 5px; margin: 5px 0; }
+        img { max-width: 200px; margin-top: 10px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <h1>Admin Image Upload Test</h1>
+    
+    <div>
+        <label>Image Path:</label><br>
+        <input type="text" id="p_imagePath" placeholder="Image path will appear here" />
+    </div>
+    
+    <div style="margin-top: 10px;">
+        <input type="file" id="p_imageFile" accept="image/*" style="display: none;" />
+        <button type="button" id="p_imageUploadBtn" class="btn">Upload Image</button>
+    </div>
+    
+    <div>
+        <img id="p_imagePreview" style="display: none;" />
+    </div>
+    
+    <div id="status" style="margin-top: 20px; padding: 10px; background: #f0f0f0;"></div>
+    
+    <script>
+        const statusDiv = document.getElementById('status');
+        
+        function log(message) {
+            console.log(message);
+            statusDiv.innerHTML += message + '<br>';
+        }
+        
+        // Setup image upload
+        const uploadBtn = document.getElementById('p_imageUploadBtn');
+        const fileInput = document.getElementById('p_imageFile');
+        const preview = document.getElementById('p_imagePreview');
+        const imagePathInput = document.getElementById('p_imagePath');
+        
+        log('Setting up image upload...');
+        
+        if (uploadBtn && fileInput) {
+            log('Elements found, attaching event listeners...');
+            
+            uploadBtn.addEventListener('click', (e) => {
+                log('Upload button clicked');
+                e.preventDefault();
+                e.stopPropagation();
+                fileInput.click();
+            });
+            
+            fileInput.addEventListener('change', async (e) => {
+                log('File input changed');
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (!fileInput.files || !fileInput.files[0]) {
+                    log('No file selected');
+                    return;
+                }
+                
+                const file = fileInput.files[0];
+                log(`File selected: ${file.name} (${file.type}, ${file.size} bytes)`);
+                
+                uploadBtn.disabled = true;
+                uploadBtn.textContent = 'Uploading...';
+                log('Starting upload...');
+                
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    
+                    log('Sending request to server...');
+                    const response = await fetch('http://localhost:5000/api/images/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    log(`Response status: ${response.status}`);
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`Upload failed: ${response.status} - ${errorText}`);
+                    }
+                    
+                    const result = await response.json();
+                    log(`Upload successful: ${JSON.stringify(result)}`);
+                    
+                    if (result.url) {
+                        imagePathInput.value = result.url;
+                        preview.src = result.url;
+                        preview.style.display = 'block';
+                        log('Image path updated and preview shown');
+                    } else {
+                        log('No URL returned from server');
+                    }
+                    
+                } catch (error) {
+                    log(`Upload error: ${error.message}`);
+                    console.error('Upload error:', error);
+                } finally {
+                    uploadBtn.disabled = false;
+                    uploadBtn.textContent = 'Upload Image';
+                    fileInput.value = '';
+                    log('Upload process completed');
+                }
+            });
+            
+            log('Event listeners attached successfully');
+        } else {
+            log('ERROR: Elements not found!');
+            log('Upload button: ' + !!uploadBtn);
+            log('File input: ' + !!fileInput);
+        }
+        
+        // Test server connection
+        fetch('http://localhost:5000/api/health')
+            .then(response => response.json())
+            .then(data => {
+                log('Server connection: OK - ' + data.status);
+            })
+            .catch(error => {
+                log('Server connection: FAILED - ' + error.message);
+            });
+    </script>
+</body>
+</html>
